@@ -1,0 +1,42 @@
+const mongoose = require('mongoose');
+
+const partySchema = new mongoose.Schema({
+    partyleader: {
+        type: String,
+        required: true
+    },
+    partyname: {
+        type: String,
+        unique: true,
+        required: true
+    },
+    abbreviation: {
+        type: String,
+        unique: true,
+        required: true
+    },
+    symbol: {
+        type: String,
+        required: true
+    },
+    foundedYear: {
+        type: Number,
+        required: true
+    },
+    ideology: {
+        type: String,
+        required: true
+    },
+    description: {
+        type: String,
+        required: true
+    },
+
+});
+
+partySchema.virtual("url").get(function () {
+    // We don't use an arrow function as we'll need the this object
+    return `/elections/party/${this._id}`;
+});
+
+module.exports = mongoose.model('Party', partySchema);

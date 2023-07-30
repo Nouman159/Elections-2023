@@ -1,0 +1,38 @@
+# OS generated files
+.DS_Store
+
+# dotenv environment variables file
+.env
+.env.test
+
+# Node.js dependencies
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Environment variables
+.env
+.env.local
+.env.test
+.env.development
+.env.production
+
+# Logs
+logs/
+*.log
+
+# Dependency cache
+.npm
+
+# Editor files
+*.swp
+.vscode/
+.idea/
+*.iml
+
+# Temporary files
+*.tmp
+
+# Mac specific files
+.AppleDouble
+.DS_Store
