@@ -101,12 +101,11 @@ exports.voter_login = [
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
         }
-        console.log("hello world 1");
         const voter = await Voter.findOne({ email: req.body.email })
         if (!voter) {
             return res.status(400).json({ message: "User not found" });
         }
-        console.log("hello world 2");
+
         const pwdCompare = await bcrypt.compare(req.body.password, voter.password);
         if (!pwdCompare) {
             return res.status(400).json({ error: "Try logging with correct credentials" });

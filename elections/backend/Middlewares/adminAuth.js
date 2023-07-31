@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 
-const adminJwtSecret = 'a7bsTn3k20KtYi9';
+const { adminJwtSecret } = require('../config');
 
 const adminAuth = (req, res, next) => {
     const token = req.header('Authorization')
