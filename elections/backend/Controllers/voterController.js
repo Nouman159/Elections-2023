@@ -75,7 +75,6 @@ exports.voter_create = [
         }
         const salt = await bcrypt.genSalt(10);
         let secPassword = await bcrypt.hash(req.body.password, salt);
-        console.log(req.file);
         const voter = new Voter({
             name: req.body.name,
             email: req.body.email,
@@ -111,9 +110,16 @@ exports.voter_login = [
             return res.status(400).json({ error: "Try logging with correct credentials" });
 
         }
+        const id = voter._id;
         const voterToken = jwt.sign({
             data: voter.id
         }, voterJwtSecret, { expiresIn: '1h' });
-        return res.status(200).cookie("token", voterToken, { httpOnly: true, withCredentials: true }).json({ voter: true });
+        return res
+            .status(200)
+            .cookie("token", voterToken, { httpOnly: true, withCredentials: true })
+            .cookie("id", id, { httpOnly: true, withCredentials: true })
+            .json({ voter: true });
+
+        ;
     })
 ]

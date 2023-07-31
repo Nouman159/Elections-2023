@@ -34,9 +34,4 @@ const partySchema = new mongoose.Schema({
 
 });
 
-partySchema.virtual("url").get(function () {
-    // We don't use an arrow function as we'll need the this object
-    return `/elections/party/${this._id}`;
-});
-
 module.exports = mongoose.model('Party', partySchema);

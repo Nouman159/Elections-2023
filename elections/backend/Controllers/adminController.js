@@ -5,7 +5,7 @@ const bcrypt = require("bcrypt");
 
 const Admin = require('../Models/admin');
 
-const adminJwtSecret = 'a7bsTn3k20KtYi9';
+const { adminJwtSecret } = require('../config');
 
 // Sign Up
 exports.admin_create = [

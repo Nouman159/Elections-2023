@@ -29,13 +29,9 @@ const voterSchema = new mongoose.Schema({
     },
     pic: {
         type: String,
-        // required: true
+        required: true
     }
 
-});
-voterSchema.virtual("url").get(function () {
-    // We don't use an arrow function as we'll need the this object
-    return `/elections/voter/${this._id}`;
 });
 
 const Voter = mongoose.model('Voter', voterSchema);

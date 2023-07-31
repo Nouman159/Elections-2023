@@ -75,9 +75,6 @@ export default function CreateConstituency() {
                     <div className={`d-grid ${styles.d_grid}`}>
                         <button className='btn btn-primary' onClick={handleSubmit}>Create</button>
                     </div>
-                    {/* <p className='text-end mt-2'>
-                        Forgot <Link href='/' id='pass'>Password?</Link>
-                    </p> */}
                 </form>
             </div>
         </div>

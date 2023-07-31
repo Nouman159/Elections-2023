@@ -1,26 +1,20 @@
 const jwt = require("jsonwebtoken");
-
 const { voterJwtSecret } = require('../config');
 
-module.exports = (req, res, next) => {
+exports.voterValidator = (req, res, next) => {
     const token = req.cookies.token;
-    if (!token)
-        return res.status(401).send("Access denied...No token provided");
+    if (!token) {
+        return res.status(401).json({ authenticated: 'false' });
+    }
     try {
         const decoded = jwt.verify(token, voterJwtSecret);
         req.user = decoded;
-        next();
-    } catch (er) {
-        // console.log("err", er);
-        //Incase of expired jwt or invalid token kill the token and clear the cookie
+        return res.status(200).json({ authenticated: true });
+    }
+    catch (er) {
+        console.log("err", er);
         res.clearCookie("token");
-        return res.redirect('/login');
+        res.clearCookie("id");
+        return res.status(401).json({ authenticated: 'false' });
     }
 };
-
-exports.logOutUser = async (req, res, next) => {
-    res.clearCookie("token");
-    res.send({ success: true });
-};
-
-module.exports = voterAuth;

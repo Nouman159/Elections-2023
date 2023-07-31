@@ -15,8 +15,16 @@ export default function Navbar() {
                 </div>
                 <div className={`${styles.nav_right}`}>
                     <ul>
-                        <li className={`${styles.links}`}><Link className={`${styles.t_dec}`} to='/signup'>SignUp</Link></li>
-                        <li className={`${styles.links}`}><Link className={`${styles.t_dec}`} to='/login'>Login</Link></li>
+                        <li className={`${styles.links}`}>
+                            <button>
+                                <Link className={`${styles.t_dec} `} to='/signup'>SignUp</Link>
+                            </button>
+                        </li>
+                        <li className={`${styles.links}`}>
+                            <button>
+                                <Link className={`${styles.t_dec}`} to='/login'>Login</Link>
+                            </button>
+                        </li>
                     </ul>
                 </div>
             </div>

@@ -22,10 +22,5 @@ const candidateSchema = new mongoose.Schema({
     }
 });
 
-candidateSchema.virtual("url").get(function () {
-    // We don't use an arrow function as we'll need the this object
-    return `/elections/candidate/${this._id}`;
-});
-
 module.exports = mongoose.model('Candidate', candidateSchema);
 
