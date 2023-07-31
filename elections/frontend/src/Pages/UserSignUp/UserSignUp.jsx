@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
-// import axios from 'axios'
-
+import { Link, useNavigate } from 'react-router-dom'
+import axiosInstance from '../../axios'
 import './UserSignUp.css'
 
 export default function UserSignUp() {
+    const navigate = useNavigate();
 
     const [newUser, setNewUser] = useState({
         name: '', email: '', password: '', cnic: '', constituency: '', pic: ''
@@ -33,43 +33,45 @@ export default function UserSignUp() {
         formData.append('cnic', newUser.cnic);
         formData.append('constituency', newUser.constituency);
         formData.append('pic', newUser.pic);
-        const response = await fetch('http://localhost:5000/elections/voter/signup',
-            {
-                method: 'POST',
-                body: formData
+        try {
+            const response = await axiosInstance.post(`/elections/voter/signup`, formData);
+            if (response.status === 200) {
+                navigate('/login');
             }
-        );
-        const data = await response.json();
-        // console.log(data.errors);
-        console.log(data);
-        if (data.cnicError) {
-            err.cnic = 'cnic already exists';
-            setErrors(err);
-        }
-        if (data.emailError) {
-            err.email = 'email already exists';
-            setErrors(err);
-        }
-        if (data.errors) {
-            const backendErrors = {};
-            data.errors.forEach((error) => {
-                backendErrors[error.path] = error.msg;
-                setErrors(prevErrors => ({ ...prevErrors, ...backendErrors }));
-            });
+        } catch (error) {
+            if (error.response) {
+                if (error.response.status === 400) {
+                    const data = error.response.data;
+                    if (data.cnicError) {
+                        const err = { ...errors };
+                        err.cnic = 'CNIC already exists';
+                        setErrors(err);
+                    }
+                    if (data.emailError) {
+                        const err = { ...errors };
+                        err.email = 'Email already exists';
+                        setErrors(err);
+                    }
+                    if (data.errors) {
+                        const backendErrors = {};
+                        data.errors.forEach((err) => {
+                            backendErrors[err.path] = err.msg;
+                        });
+                        setErrors((prevErrors) => ({ ...prevErrors, ...backendErrors }));
+                    }
+                }
+            }
         }
     }
-    // useEffect(() => {
-    //     console.log(errors);
-    // }, [errors]);
     const validate = (values) => {
         const regex = /^[\w.-]+@gmail\.com$/i;
         const regexCnic = /^\d{5}-\d{7}-\d{1}$/;
         const regexCnic2 = /^\d{13}$/;
-        // if (!values.name) {
-        //     err.name = 'Name required !';
-        // } else if (values.name.length < 3) {
-        //     err.name = 'Name should be at least 3 char';
-        // }
+        if (!values.name) {
+            err.name = 'Name required !';
+        } else if (values.name.length < 3) {
+            err.name = 'Name should be at least 3 char';
+        }
         if (!values.email) {
             err.email = 'Email required !';
         } else if (!regex.test(values.email)) {
@@ -91,7 +93,6 @@ export default function UserSignUp() {
         if (!values.pic) {
             err.pic = 'pic  is required !';
         }
-        // console.log(err);
         return err;
     }
 

@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
-// import axios from 'axios'
-
 import styles from './CreateConstituency.module.css'
+import axiosInstance from '../../axios';
 
 export default function CreateConstituency() {
 
@@ -19,18 +18,17 @@ export default function CreateConstituency() {
         if (!errors.length === 0) {
             return;
         }
-        const response = await fetch('http://localhost:5000/elections/admin/create/constituency', {
+        const response = await axiosInstance(`/elections/admin/create/constituency`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
+            data: {
                 name: newConstituency.name,
                 city: newConstituency.city,
                 area: newConstituency.area
-            }),
+            },
         });
-
         console.log(response);
     }
 

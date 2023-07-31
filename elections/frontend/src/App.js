@@ -1,13 +1,13 @@
 import {
   BrowserRouter, Routes, Route
 } from 'react-router-dom'
-
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './App.css';
 import UserLogin from './Pages/UserLogin/UserLogin';
 import UserSignUp from './Pages/UserSignUp/UserSignUp';
 import CreateConstituency from './Pages/CreateConstituency/CreateConstituency';
 import HomePage from './Pages/HomePage/HomePage';
+import VoterHomePage from './Pages/VoterHomePage/VoterHomePage';
 function App() {
   return (
     <BrowserRouter >
@@ -15,6 +15,7 @@ function App() {
         <Route path='/login' element={<UserLogin />} />
         <Route path='/signup' element={<UserSignUp />} />
         <Route path='/' element={<HomePage />} />
+        <Route path='/voter/home/page' element={<VoterHomePage />} />
         <Route path='/elections/admin/create/constituency' element={<CreateConstituency />} />
 
       </Routes>
