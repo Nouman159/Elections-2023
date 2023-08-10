@@ -1,0 +1,33 @@
+.content {
+    width: 85vw;
+    margin: 0px auto;
+}
+
+.navbar {
+    width: 85vw;
+    margin: 0px auto;
+}
+
+
+.gradient_custom {
+    /* fallback for old browsers */
+    background: #f6d365;
+
+    /* Chrome 10-25, Safari 5.1-6 */
+    background: -webkit-linear-gradient(to right bottom, rgba(246, 211, 101, 1), rgba(253, 160, 133, 1));
+
+    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    background: linear-gradient(to right bottom, rgba(246, 211, 101, 1), rgba(253, 160, 133, 1))
+}
+
+.max_width_1 {
+    max-width: 90vw;
+}
+
+.margin_top {
+    margin-top: 2%;
+}
+
+.m_auto {
+    margin: auto;
+}

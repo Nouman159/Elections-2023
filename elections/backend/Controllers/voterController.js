@@ -117,9 +117,25 @@ exports.voter_login = [
         return res
             .status(200)
             .cookie("token", voterToken, { httpOnly: true, withCredentials: true })
-            .cookie("id", id, { httpOnly: true, withCredentials: true })
-            .json({ voter: true });
+            .json({ voter: true, "voterId": id });
 
         ;
+    })
+]
+//Profile
+exports.voter_profile = [
+    asyncHandler(async (req, res, next) => {
+        const voterId = req.params.id;
+        try {
+
+            const voter = await Voter.findOne({ _id: voterId })
+            if (!voter) {
+                return res.status(400).json({ message: "User not found" });
+            }
+            return res.status(200).json({ voter: voter });
+        }
+        catch (err) {
+            return res.status(404);
+        }
     })
 ]

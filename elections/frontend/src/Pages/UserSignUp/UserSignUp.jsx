@@ -17,15 +17,19 @@ export default function UserSignUp() {
     }
     const handlePhoto = (e) => {
         setNewUser({ ...newUser, pic: e.target.files[0] });
-        console.log(newUser.pic);
     }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setErrors(validate(newUser));
-        if (!errors.length === 0) {
+        const frontErr = validate(newUser);
+        setErrors(frontErr);
+        if (Object.keys(frontErr).length !== 0) {
+
+            console.log('hello 2');
             return;
         }
+
+        console.log('hello 3');
         const formData = new FormData();
         formData.append('name', newUser.name);
         formData.append('email', newUser.email);

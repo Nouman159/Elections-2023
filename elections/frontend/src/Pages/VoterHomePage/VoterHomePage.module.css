@@ -1,3 +1,8 @@
+.navbar {
+    width: 85vw;
+    margin: auto;
+}
+
 .m_auto {
     margin: auto;
 }
@@ -17,4 +22,17 @@
 .card_container {
     max-width: 30vw;
     margin: 20px 10px;
+}
+
+@media screen and (max-width : 700px) {
+    .card_container {
+        max-width: 45vw;
+    }
+}
+
+@media screen and (max-width : 320px) {
+    .card_container {
+        max-width: 55vw;
+        /* margin: 20px 10px; */
+    }
 }

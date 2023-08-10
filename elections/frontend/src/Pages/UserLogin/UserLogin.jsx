@@ -34,8 +34,10 @@ export default function UserLogin() {
                     password: newUserLogin.password
                 }
             });
+            console.log('Hello');
             if (response.status === 200) {
-                navigate('/voter/home/page')
+                localStorage.setItem("voterId", response.data.voterId);
+                navigate('/elections/voter/home/page');
             }
         } catch (error) {
             if (error.response) {
@@ -60,7 +62,6 @@ export default function UserLogin() {
                     }
                 }
             }
-
         }
     }
 

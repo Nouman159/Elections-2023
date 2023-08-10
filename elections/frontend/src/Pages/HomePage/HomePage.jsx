@@ -1,12 +1,26 @@
-import React from 'react'
-import Navbar from '../../Components/Navbar'
+import React, { useEffect } from 'react'
+import Navbar from '../../Components/Navbar/Navbar'
 import styles from './HomePage.module.css'
 import logoImage from './logo.jpg'
+import { useNavigate } from 'react-router-dom'
 
 export default function HomePage() {
+    const navigate = useNavigate();
+    const adminId = localStorage.getItem('adminId');
+    const voterId = localStorage.getItem('voterId');
+    useEffect(() => {
+        if (adminId) {
+            navigate('/elections/admin/dashboard');
+        }
+        else if (voterId) {
+            navigate('/elections/voter/home/page');
+        }
+    }, [adminId, voterId, navigate])
     return (
         <div>
-            <Navbar />
+            <div className="navbar">
+                <Navbar />
+            </div>
             <div className={`${styles.home_container} ${styles.bg_home}`}>
                 <div className={`${styles.content_left}`}>
                     <div className={`${styles.logo}`}>

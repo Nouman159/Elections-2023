@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const { adminJwtSecret } = require('../config');
 
 const adminAuth = (req, res, next) => {
-    const token = req.header('Authorization')
+    const token = req.cookies.adminToken;
     if (!token) {
         return res.status(401).json({ access: 'false', message: 'Authorization denied' });
     }
@@ -16,4 +16,24 @@ const adminAuth = (req, res, next) => {
     }
 };
 
-module.exports = adminAuth;
+const adminLogout = (req, res) => {
+    const token = req.cookies.adminToken;
+    if (!token) {
+        return res.status(200).json({ isLogout: true });
+    }
+    try {
+        const decoded = jwt.verify(token, adminJwtSecret);
+        req.user = decoded;
+        res.clearCookie("adminToken");
+        return res.status(200).json({ isLogout: true });
+    }
+    catch (er) {
+        console.log("err", er);
+        return res.status(401).json({ isLogout: false });
+    }
+};
+
+module.exports = {
+    adminAuth,
+    adminLogout
+}

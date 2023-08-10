@@ -1,32 +1,69 @@
 const asyncHandler = require('express-async-handler');
 const { body, validationResult } = require("express-validator");
 const candRequest = require('../Models/candidateRequests');
-
+const Party = require('../Models/party');
+const Constituency = require('../Models/constituency');
 
 exports.candidate_request = [
-    body('constituency').isMongoId().withMessage('Invalid reference of constituency'),
-    body('voter').isMongoId().withMessage('Invalid reference of voter'),
-    body('party').isMongoId().withMessage('Invalid reference of party'),
     body('description')
-        .notEmpty().withMessage('Description is required.')
-        .matches(/^[a-zA-Z0-9\s'-]+$/).withMessage('Special characters not allowed'),
+        .isLength({ min: 8 }).withMessage("Description must be at least 8 characters long"),
     asyncHandler(async (req, res, next) => {
         const errors = validationResult(req);
+        console.log(req.body);
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
         }
-        const voterId = req.body.voter;
-        const request = await candRequest.findById({ voter: voterId });
+        const voterId = req.params.id;
+        const request = await candRequest.findOne({ voter: voterId });
         if (request) {
-            return res.status(400).json({ message: 'Request already in queue' });
+            return res.status(409).json({ error: 'Request already in queue' });
         }
-        const newRequest = new candRequest({
-            voter: req.body.voter,
-            constituency: req.body.constituency,
-            party: req.body.party,
-            description: req.body.description
-        })
-        await newRequest.save();
-        return res.status(200).json({ message: 'success' });
+        try {
+            const newRequest = new candRequest({
+                voter: voterId,
+                constituency: req.body.constituency,
+                party: req.body.party,
+                description: req.body.description
+            });
+            await newRequest.save();
+            return res.status(200).json({ message: 'success' });
+        } catch {
+            return res.status(400).json({ message: 'failed' });
+        }
+    })
+];
+
+exports.request_data = [
+    asyncHandler(async (req, res, next) => {
+        try {
+
+            const parties = await Party.find().sort({ partyname: 1 });
+            if (!parties) {
+                return res.status(400).json({ message: "Parties not found" });
+            }
+            const constituencies = await Constituency.find().sort({ name: 1 });
+            if (!constituencies) {
+                return res.status(400).json({ message: "Constituencies not found" });
+            }
+            return res.status(200).json({ parties: parties, constituencies: constituencies });
+        }
+        catch (err) {
+            return res.status(404);
+        }
+    })
+]
+
+exports.get_candidate_requests = [
+    asyncHandler(async (req, res, next) => {
+        try {
+            const requests = await candRequest.find();
+            if (!requests) {
+                return res.status(404).json({ message: "No requests yet" });
+            }
+            return res.status(200).json({ message: "success", requests: requests });
+
+        } catch {
+            return res.status(400).json({ message: "failed" });
+        }
     })
 ]

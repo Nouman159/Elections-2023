@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
 import styles from './CreateConstituency.module.css'
 import axiosInstance from '../../axios';
+import { useNavigate } from 'react-router-dom';
 
 export default function CreateConstituency() {
-
+    const navigate = useNavigate();
     const [newConstituency, setNewConstituency] = useState({
         name: '', city: '', area: ''
     })
@@ -14,34 +15,70 @@ export default function CreateConstituency() {
     }
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setErrors(validate(newConstituency));
-        if (!errors.length === 0) {
+        const err = validate(newConstituency);
+        setErrors(err);
+        if (Object.keys(err).length !== 0) {
             return;
         }
-        const response = await axiosInstance(`/elections/admin/create/constituency`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            data: {
-                name: newConstituency.name,
-                city: newConstituency.city,
-                area: newConstituency.area
-            },
-        });
-        console.log(response);
+        try {
+            const response = await axiosInstance(`/elections/admin/create/constituency`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                data: {
+                    name: newConstituency.name,
+                    city: newConstituency.city,
+                    area: newConstituency.area
+                },
+            });
+            console.log(response);
+            if (response.status === 200) {
+                navigate('/elections/admin/dashboard');
+            }
+        } catch (error) {
+            if (error.response) {
+                if (error.response.status === 400) {
+                    const data = error.response.data;
+                    if (data.error) {
+                        const err = { ...errors };
+                        err.name = 'Constituency already exist';
+                        setErrors(err);
+                    }
+                    if (data.error2) {
+                        const err = { ...errors };
+                        err.area = 'Area already included';
+                        setErrors(err);
+                    }
+                    if (data.message === 'Try later') {
+                        const err = { ...errors };
+                        err.name = 'Not created . Try Later ! ';
+                        setErrors(err);
+                    }
+                    if (data.errors) {
+                        const backendErrors = {};
+                        data.errors.forEach((err) => {
+                            backendErrors[err.path] = err.msg;
+                        });
+                        setErrors((prevErrors) => ({ ...prevErrors, ...backendErrors }));
+                    }
+                }
+            }
+        }
     }
 
     const validate = (values) => {
         const err = {};
         if (!values.name) {
             err.name = 'Name required !';
-        } else if (values.name.length < 3) {
+        }
+        else if (values.name.length < 3) {
             err.name = 'Name should be at least 3 char';
         }
         if (!values.city) {
             err.city = 'City required !';
-        } else if (values.city.length < 3) {
+        }
+        else if (values.city.length < 3) {
             err.city = 'City must be at least 3 characters';
         }
         if (!values.area) {

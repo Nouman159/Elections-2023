@@ -2,13 +2,11 @@ const mongoose = require('mongoose');
 
 const candidateRequestSchema = new mongoose.Schema({
     party: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Party',
+        type: String,
         required: true
     },
     constituency: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Constituency',
+        type: String,
         required: true
     },
     voter: {
@@ -22,7 +20,7 @@ const candidateRequestSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['pending', 'resolved'],
+        enum: ['pending', 'viewed', 'resolved'],
         default: 'pending'
     }
 });

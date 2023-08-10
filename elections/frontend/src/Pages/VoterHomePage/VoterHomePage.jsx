@@ -1,23 +1,31 @@
 import React from 'react'
-import Navbar from '../../Components/Navbar'
+import Navbar from '../../Components/Navbar/Navbar'
 import styles from './VoterHomePage.module.css'
 import { Link, useNavigate } from 'react-router-dom'
 import axiosInstance from '../../axios'
 
 export default function VoterHomePage() {
   const navigate = useNavigate();
+  const validator = localStorage.getItem('voterId');
+  if (!validator) {
+    navigate('/voter/login');
+  }
   const handleValidation = async () => {
-    const response = await axiosInstance('/validate/voter');
-    console.log(response);
-    console.log(response.data.authenticated);
-    if (!response.data.authenticated) {
-      navigate('/login');
+    try {
+      await axiosInstance('/validate/voter');
+    } catch (err) {
+      if (err.response.data.authenticated === false) {
+        localStorage.removeItem('voterId');
+        navigate('/login');
+      }
     }
   }
   handleValidation();
   return (
     <div>
-      <Navbar />
+      <div className="navbar">
+        <Navbar />
+      </div>
       <div className={`${styles.home_content} ${styles.max_width_1} ${styles.m_auto}`}>
         <h1>Welcome to election system</h1>
         <div className={`${styles.present_event}`}>
@@ -25,7 +33,6 @@ export default function VoterHomePage() {
           <div className={`col-sm-6 ${styles.card_container}`}>
             <div className="card">
               <div className="card-body">
-
                 <p className="card-text">Vote for your favourite candidate and help him win the contest</p>
                 <Link to="/" className="btn btn-primary">Vote Now</Link>
               </div>

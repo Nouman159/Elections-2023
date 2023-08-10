@@ -22,31 +22,36 @@ exports.admin_create = [
         .isEmail()
         .withMessage('Invalid email format.'),
     body('password').notEmpty().withMessage('Password is required.')
-        .isLength({ min: 8 }).withMessage('Password must be at least 8 characters.')
-        .custom(value => {
-            const commonPasswords = ['password', '123456', 'qwerty', 'abcdef'];
-            if (commonPasswords.includes(value.toLowerCase())) {
-                throw new Error('Please choose a stronger password.');
-            }
-            return true;
-        }),
+        .isLength({ min: 8 }).withMessage('Password must be at least 8 characters.'),
     asyncHandler(async (req, res, next) => {
+        console.log(req.body);
         const errors = validationResult(req);
+        const user = await Admin.findOne({ email: req.body.email });
+        if (user) {
+            errors.errors.push({
+                type: 'field',
+                value: '',
+                msg: 'Email already used',
+                path: 'email',
+                location: 'body',
+            })
+        }
+
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
         }
-        const user = await Admin.findOne({ email: req.body.email });
-        if (user) {
-            return res.status(400).json({ message: 'User with that email already exists' });
+        try {
+            const salt = await bcrypt.genSalt(10);
+            let secPassword = await bcrypt.hash(req.body.password, salt);
+            const admin = new Admin({
+                username: req.body.username,
+                email: req.body.email,
+                password: secPassword
+            })
+            await admin.save();
+        } catch (err) {
+            return res.status(400).json({ message: 'false' });
         }
-        const salt = await bcrypt.genSalt(10);
-        let secPassword = await bcrypt.hash(req.body.password, salt);
-        const admin = new Admin({
-            username: req.body.username,
-            email: req.body.email,
-            password: secPassword
-        })
-        await admin.save();
         return res.status(200).json({ message: 'success' });
     })
 ]
@@ -71,11 +76,12 @@ exports.admin_login = [
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
         }
+        console.log(req.body);
         const admin = await Admin.findOne({ email: req.body.email })
-        const pwdCompare = await bcrypt.compare(req.body.password, admin.password);
         if (!admin) {
-            return res.status(400).json({ message: "User not found" });
+            return res.status(400).json({ err: "User not found" });
         }
+        const pwdCompare = await bcrypt.compare(req.body.password, admin.password);
         if (!pwdCompare) {
             return res.status(400).json({ errors: "Try logging with correct credentials" });
 
@@ -83,6 +89,8 @@ exports.admin_login = [
         const adminToken = jwt.sign({
             data: admin.id
         }, adminJwtSecret);
-        return res.status(200).json({ admin: true, adminToken: adminToken });
+        return res.status(200)
+            .cookie("adminToken", adminToken, { httpOnly: true, withCredentials: true })
+            .json({ admin: true, "adminId": admin._id });
     })
 ]

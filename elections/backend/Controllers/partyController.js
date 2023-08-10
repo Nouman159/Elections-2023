@@ -7,8 +7,8 @@ const { v4: uuidv4 } = require('uuid');
 const Party = require('../Models/party');
 
 const storage = multer.diskStorage({
-    designation: function (req, file, cb) {
-        cb(null, 'parties');
+    destination: function (req, file, cb) {
+        cb(null, 'symbol');
     },
     filename: function (req, file, cb) {
         cb(null, uuidv4() + '-' + Date.now() + path.extname(file.originalname));
@@ -16,7 +16,7 @@ const storage = multer.diskStorage({
 });
 
 const fileFilter = (req, file, cb) => {
-    const allowedFileTypes = ['parties/jpeg', 'parties/png', 'parties/jpg'];
+    const allowedFileTypes = ['image/jpeg', 'image/png', 'image/jpg'];
     if (allowedFileTypes.includes(file.mimetype)) {
         cb(null, true);
     }
@@ -27,6 +27,7 @@ const fileFilter = (req, file, cb) => {
 let upload = multer({ storage, fileFilter });
 
 exports.party_create = [
+    upload.single('symbol'),
     body('leadername')
         .trim()
         .isLength({ min: 3 })
@@ -39,8 +40,8 @@ exports.party_create = [
         .isLength({ min: 3 })
         .escape()
         .withMessage("Enter valid name")
-        .matches(/^[a-zA-Z's-]+$/)
-        .withMessage('Party name can only contain letters only'),
+        .matches(/^[a-zA-Z\s'-]+$/)
+        .withMessage('Party name can contain letters only'),
     body('abbreviation')
         .trim()
         .notEmpty()
@@ -48,9 +49,9 @@ exports.party_create = [
         .isLength({ min: 2, max: 10 })
         .withMessage('Abbreviation must be between 2 and 10 characters.')
         .matches(/^[A-Z-\s]+$/).withMessage('Abbreviation can only contain uppercase letters and hyphens.'),
-    body('year')
-        .notEmpty().withMessage('Year is required.')
-        .isInt({ min: 1000, max: 9999 }).withMessage('Year must be a four-digit number.'),
+    body('foundedYear')
+        .notEmpty().withMessage('Founded Year is required.')
+        .isInt({ min: 1000, max: 2023 }).withMessage('Year must be valid number.'),
     body('ideology')
         .notEmpty()
         .withMessage('Idelogy is required.')
@@ -58,10 +59,7 @@ exports.party_create = [
         .withMessage('Special characters not allowed'),
     body('description')
         .notEmpty()
-        .withMessage('Description is required.')
-        .matches(/^[a-zA-Z0-9\s'-]+$/)
-        .withMessage('Special characters not allowed'),
-    upload.single('photo'),
+        .withMessage('Description is required.'),
     asyncHandler(async (req, res, next) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -71,19 +69,26 @@ exports.party_create = [
         if (party) {
             return res.status(400).json({ message: 'Party with that name already exists' });
         }
-        party = await Party.findOne({ abbreviation: req.body.abbreviation })
-        if (party) {
-            return res.status(400).json({ message: 'Party with that name already exists' });
+        const party2 = await Party.findOne({ abbreviation: req.body.abbreviation })
+        if (party2) {
+            return res.status(400).json({ message: 'Enter unique abbreviation. Already exists' });
         }
-        const newParty = new Party({
-            partyname: req.body.partyname,
-            leadername: req.body.leadername,
-            abbreviation: req.body.abbreviation,
-            ideology: req.body.ideology,
-            symbol: req.file.filename,
-            description: req.body.description,
-        })
-        await newConstituency.save();
-        return res.status(200).json({ message: 'success' });
+        try {
+            const newParty = new Party({
+                partyname: req.body.partyname,
+                partyleader: req.body.leadername,
+                abbreviation: req.body.abbreviation,
+                ideology: req.body.ideology,
+                symbol: req.file.filename,
+                description: req.body.description,
+                foundedYear: req.body.foundedYear
+            })
+            await newParty.save();
+            return res.status(200).json({ message: 'success' });
+        }
+        catch {
+            return res.status(400).json({ message: 'denied' });
+
+        }
     })
 ]

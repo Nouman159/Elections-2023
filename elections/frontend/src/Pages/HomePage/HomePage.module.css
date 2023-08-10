@@ -1,3 +1,8 @@
+.navbar {
+    width: 85vw;
+    margin: 0px auto;
+}
+
 .home_container {
     width: auto;
     max-width: 80vw;

@@ -1,0 +1,39 @@
+.navbar {
+    width: 85vw;
+    margin: 0px auto;
+}
+
+.main-content {
+    width: 85vw;
+    margin: 0px auto;
+    /* background-color: rgb(140, 140, 180); */
+    background: url('./bg.avif');
+    color: white;
+}
+
+.information {
+    display: flex;
+    flex-direction: row;
+}
+
+.info {
+    border: 3px solid rgb(48, 45, 45);
+    margin: 20px auto;
+    padding: 20px 20px;
+    border-radius: 10px;
+    color: black;
+    background-color: rgba(231, 238, 235, 0.674);
+}
+
+.description {
+    width: 40vw;
+    margin: 40px 65px;
+}
+
+.footer {
+    width: 85vw;
+    margin: auto;
+    position: sticky;
+    bottom: 0;
+    margin-top: -24px;
+}
