@@ -78,10 +78,12 @@ export default function AdminSignUp() {
     }
 
     return (
+        <div>
+        
         <div className='body login template d-flex justify-content-center vh-100 bg-prmary'>
             <div className={`px-5 py-3 rounded bgwhite form_container`}>
                 <form encType='multipart/form-data'>
-                    <h3 className='text-center'>Sign Up</h3>
+                    <h3 className='text-center'>Admin SignUp</h3>
                     <div className="form-controller">
                         <div className='mb-2 form-inp'>
                             <label htmlFor='username'>Username</label>
@@ -100,10 +102,11 @@ export default function AdminSignUp() {
                         </div>
                     </div>
                     <div className='d-grid'>
-                        <button className='btn btn-primary' onClick={handleSubmit}>Sign In</button>
+                        <button className='btn btn-primary' onClick={handleSubmit}>SignUp</button>
                     </div>
                 </form>
             </div>
+        </div>
         </div>
     )
 }

@@ -88,7 +88,6 @@ exports.party_create = [
         }
         catch {
             return res.status(400).json({ message: 'denied' });
-
         }
     })
 ]

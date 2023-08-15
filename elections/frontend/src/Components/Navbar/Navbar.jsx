@@ -1,7 +1,7 @@
 import React from 'react';
 import './Navbar.css'
 
-export default function AdminNavbar() {
+export default function Navbar() {
     const id = localStorage.getItem('voterId');
     return (
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -19,18 +19,44 @@ export default function AdminNavbar() {
                             <a className="nav-link active" href="#">Features</a>
                         </li>
                     </ul>
-
                     <ul className="navbar-nav">
-                        <li className="nav-item dropdown">
-                            <a className="nav-link active dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Others
-                            </a>
-                            <ul className="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                                <li><a className="dropdown-item" href="/elections/voter/profile">Profile</a></li>
-                                <li><a className="dropdown-item" href={`/elections/request/candidate/${id}`}>Request Candidate</a></li>
-                                <li><a className="dropdown-item" href="">Logout</a></li>
-                            </ul>
-                        </li>
+                        {(!localStorage.getItem('voterId') && !localStorage.getItem('adminId')) ? (
+                            <>
+                                <li className="nav-item dropdown">
+                                    <a className="nav-link active dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        SignUp
+                                    </a>
+                                    <ul className="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                        <li><a className="dropdown-item" href="/admin/signup">Admin</a></li>
+                                        <li><a className="dropdown-item" href="/voter/signup">Voter</a></li>
+                                    </ul>
+                                </li>
+                                <li className="nav-item dropdown">
+                                    <a className="nav-link active dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Login
+                                    </a>
+                                    <ul className="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                        <li><a className="dropdown-item" href="/admin/login">Admin</a></li>
+                                        <li><a className="dropdown-item" href="/voter/login">Voter</a></li>                            </ul>
+                                </li>
+                            </>
+                        ) :
+                            (
+                                (localStorage.getItem('voterId')) ? (
+                                    <li className="nav-item dropdown">
+                                        <a className="nav-link active dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            Others
+                                        </a>
+                                        <ul className="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                            <li><a className="dropdown-item" href="/elections/voter/profile">Profile</a></li>
+                                            <li><a className="dropdown-item" href={`/elections/request/candidate/${id}`}>Request Candidate</a></li>
+                                            <li><a className="dropdown-item" href="">Logout</a></li>
+                                        </ul>
+                                    </li>
+                                ) : (<></>
+                                )
+                            )
+                        }
                     </ul>
                 </div>
             </div >

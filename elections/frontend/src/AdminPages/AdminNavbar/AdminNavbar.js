@@ -25,7 +25,7 @@ export default function AdminNavbar() {
                             <ul className="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                                 <li><a className="dropdown-item" href="create/party">Party</a></li>
                                 <li><a className="dropdown-item" href="create/constituency">Constituency</a></li>
-                                <li><a className="dropdown-item" href="#">Something else here</a></li>
+                                <li><a className="dropdown-item" href="create/election">Election</a></li>
                             </ul>
                         </li>
                     </ul>

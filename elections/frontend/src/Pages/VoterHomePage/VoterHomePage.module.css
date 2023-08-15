@@ -20,19 +20,26 @@
 }
 
 .card_container {
-    max-width: 30vw;
+    width: 100%;
     margin: 20px 10px;
+    display: flex;
+    flex-direction: row;
+}
+
+.card {
+    width: 25%;
+    height: auto;
+    margin: 0px 10px;
 }
 
 @media screen and (max-width : 700px) {
-    .card_container {
-        max-width: 45vw;
+    .card {
+        width: 35%;
     }
 }
 
 @media screen and (max-width : 320px) {
-    .card_container {
-        max-width: 55vw;
-        /* margin: 20px 10px; */
+    .card {
+        width: 45%;
     }
 }

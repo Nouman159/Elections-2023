@@ -56,12 +56,46 @@ exports.request_data = [
 exports.get_candidate_requests = [
     asyncHandler(async (req, res, next) => {
         try {
-            const requests = await candRequest.find();
+            const requests = await candRequest.find({ status: 'pending' });
             if (!requests) {
                 return res.status(404).json({ message: "No requests yet" });
             }
             return res.status(200).json({ message: "success", requests: requests });
 
+        } catch {
+            return res.status(400).json({ message: "failed" });
+        }
+    })
+]
+
+exports.candidate_approved = [
+    asyncHandler(async (req, res, next) => {
+        console.log('Hello');
+        const { requestId } = req.params;
+        try {
+            const request = await candRequest.findOne({ _id: requestId });
+            if (!request) {
+                return res.status(404).json({ message: "No such request" });
+            }
+            request.status = 'candidate';
+            await request.save();
+            return res.status(200).json({ message: "success" });
+
+        } catch {
+            return res.status(400).json({ message: "failed" });
+        }
+    })
+]
+
+exports.candidate_rejected = [
+    asyncHandler(async (req, res, next) => {
+        const { requestId } = req.params;
+        try {
+            const request = await candRequest.deleteOne({ _id: requestId });
+            if (request.deletedCount === 1) {
+                return res.status(200).json({ message: "success" });
+            }
+            return res.status(404).json({ message: "No such request" });
         } catch {
             return res.status(400).json({ message: "failed" });
         }

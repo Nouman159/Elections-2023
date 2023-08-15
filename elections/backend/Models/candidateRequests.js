@@ -20,7 +20,7 @@ const candidateRequestSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['pending', 'viewed', 'resolved'],
+        enum: ['pending', 'candidate'],
         default: 'pending'
     }
 });

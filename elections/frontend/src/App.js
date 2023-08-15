@@ -19,6 +19,8 @@ import AdminDashboard from './AdminPages/AdminDashboard/AdminDashboard';
 import AdminLogout from './AdminPages/AdminLogout/AdminLogout';
 import CandidateRequest from './Pages/RequestCandidate/RequestCandidate';
 import CandidateRequests from './AdminPages/CandidateRequests/CandidateRequests';
+import CreateElection from './AdminPages/CreateElection/CreateElection';
+import Voting from './Pages/Voting/Voting';
 
 function App() {
 
@@ -33,9 +35,12 @@ function App() {
           <Route path='/' element={<HomePage />} />
           <Route path='/elections/voter/home/page' element={<VoterHomePage />} />
           <Route path='/elections/request/candidate/:id' element={<CandidateRequest />} />
+          <Route path='/elections/vote/:electionId' element={<Voting />} />
 
           <Route path='/elections/admin/create/constituency' element={<CreateConstituency />} />
           <Route path='/elections/admin/create/party' element={<CreateParty />} />
+          <Route path='/elections/admin/create/election' element={<CreateElection />} />
+
 
           <Route path='/admin/signup' element={< AdminSignUp />} />
           <Route path='/admin/login' element={< AdminLogin />} />

@@ -97,13 +97,8 @@ export default function CreateParty() {
         <div className='body login template d-flex justify-content-center vh-100 bg-prmary'>
             <div className={`px-5 py-3 rounded bgwhite form_container`}>
                 <form encType='multipart/form-data'>
-                    <h3 className='text-center'>Sign Up</h3>
+                    <h3 className='text-center'>Create Party</h3>
                     <div className="form-controller">
-                        <div className='mb-2 form-inp'>
-                            <label htmlFor='description'>description</label>
-                            <input type='textarea' name='description' placeholder='Enter your description' value={newParty.name} className='form-control' onChange={handleChange} />
-                            <p className='error'>{errors.description}</p>
-                        </div>
                         <div className='mb-2 form-inp'>
                             <label htmlFor='partyname'>partyname</label>
                             <input type='text' name='partyname' placeholder='Enter partyname' value={newParty.partyname} className='form-control' onChange={handleChange} />
@@ -131,7 +126,11 @@ export default function CreateParty() {
                             />
                             <p className='error'>{errors.foundedYear}</p>
                         </div>
-
+                        <div className='mb-2 form-inp'>
+                            <label htmlFor='description'>description</label>
+                            <input type='textarea' name='description' placeholder='Enter your description' value={newParty.name} className='form-control' onChange={handleChange} />
+                            <p className='error'>{errors.description}</p>
+                        </div>
                         <div className='mb-2 form-inp'>
                             <label htmlFor='symbol'>Upload symbol</label>
                             <input type='file' name='symbol' accept='.png, .jpg , .jpeg' className='form-control' onChange={handlePhoto} />

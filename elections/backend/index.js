@@ -29,13 +29,13 @@ app.use('/', userRoutes);
 app.use('/admin', adminRoutes);
 app.use('/elections/admin', catalogRoutes);
 
-app.use(function (req, res, next) {
-  next(createError(404));
-});
+// app.use(function (req, res, next) {
+//   next(createError(404));
+// });
 
 // error handler
 app.use(function (err, req, res, next) {
-  console.error(err);
+  console.error('Hello' + err);
 
   // set locals, only providing error in development
   res.locals.message = err.message;

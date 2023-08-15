@@ -1,26 +1,38 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import moment from 'moment'
+
+import axiosInstance from '../../axios'
 import Navbar from '../../Components/Navbar/Navbar'
 import styles from './VoterHomePage.module.css'
-import { Link, useNavigate } from 'react-router-dom'
-import axiosInstance from '../../axios'
 
 export default function VoterHomePage() {
+  const [elections, setElections] = useState([]);
   const navigate = useNavigate();
   const validator = localStorage.getItem('voterId');
-  if (!validator) {
-    navigate('/voter/login');
-  }
-  const handleValidation = async () => {
+  useEffect(() => {
+    if (!validator) {
+      navigate('/voter/login');
+    }
+  })
+  const handleGetEvents = async () => {
     try {
-      await axiosInstance('/validate/voter');
+      const response = await axiosInstance.get('/get/upcoming/elections');
+      console.log(response.data.data);
+      setElections(response.data.data);
+      // console.log(elections);
+
     } catch (err) {
-      if (err.response.data.authenticated === false) {
-        localStorage.removeItem('voterId');
-        navigate('/login');
+      if (err.response.status === 400) {
+        return (
+          <div>Try Later</div>
+        )
       }
     }
   }
-  handleValidation();
+  useEffect(() => {
+    handleGetEvents();
+  }, [])
   return (
     <div>
       <div className="navbar">
@@ -30,36 +42,22 @@ export default function VoterHomePage() {
         <h1>Welcome to election system</h1>
         <div className={`${styles.present_event}`}>
           <h3>Present Events</h3>
-          <div className={`col-sm-6 ${styles.card_container}`}>
-            <div className="card">
-              <div className="card-body">
-                <p className="card-text">Vote for your favourite candidate and help him win the contest</p>
-                <Link to="/" className="btn btn-primary">Vote Now</Link>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className={`${styles.upcoming_event}`}>
-          <h3>Upcoming Events</h3>
-          <div className={`col-sm-6 ${styles.card_container}`}>
-            <div className="card">
-              <div className="card-body">
+          <div className={`col-sm-6 ${styles.card_container}`} >
+            {elections.filter(election => election.status === 'future').map(filteredElection => (
 
-                <p className="card-text">Contest Coming soon to elect the candidates</p>
-                <Link href="/" className="btn btn-primary">Details</Link>
+              <div className={`card ${styles.card}`} key={filteredElection._id}>
+                <div className="card-body">
+                  <h3>{filteredElection.name}</h3>
+
+                  <p className="card-text"><b>Date : </b>  {moment(filteredElection.electionDate).format('YYYY-MM-DD')}</p>
+                  <p className="card-text"><b>Start Time : </b>{filteredElection.startTime} UTC</p>
+                  <p className="card-text"><b>End Time : </b>{filteredElection.endTime} UTC</p>
+                  <Link to={`/elections/vote/${filteredElection._id}`} className="btn btn-primary ">Vote Now</Link>
+                </div>
               </div>
-            </div>
+            ))}
           </div>
-        </div>
-        <div className={`${styles.past_event}`}></div>
-        <h3>Past Events</h3>
-        <div className={`col-sm-6 ${styles.card_container}`}>
-          <div className="card">
-            <div className="card-body">
-              <p className="card-text">View the results of the elections </p>
-              <Link href="/" className="btn btn-primary">View</Link>
-            </div>
-          </div>
+
         </div>
       </div>
     </div>
