@@ -48,6 +48,10 @@ export default function CreateElection() {
             }
         } catch (error) {
             if (error.response) {
+                if (error.response.status === 401) {
+                    localStorage.removeItem('adminId');
+                    navigate('/admin/login');
+                }
                 if (error.response.status === 400) {
                     const data = error.response.data;
                     if (data.errors) {

@@ -3,17 +3,21 @@ import React, { useEffect, useState } from 'react';
 import axiosInstance from '../../axios';
 import AdminNavbar from '../AdminNavbar/AdminNavbar';
 import './CandidateRequest.css';
+import { useNavigate } from 'react-router-dom';
 
 export default function CandidateRequests() {
     const [requests, setRequests] = useState([]);
-
+    const navigate = useNavigate();
     const getData = async () => {
         try {
             const response = await axiosInstance.get('/get/candidate/requests');
             setRequests(response.data.requests);
         } catch (err) {
             if (err.response) {
-
+                if (err.response.status === 401) {
+                    localStorage.removeItem('adminId');
+                    navigate('/admin/login');
+                }
                 if (err.response.status === 404) {
                     alert('No requests yet');
                 }
@@ -35,7 +39,10 @@ export default function CandidateRequests() {
             }
         } catch (err) {
             if (err.response) {
-
+                if (err.response.status === 401) {
+                    localStorage.removeItem('adminId');
+                    navigate('/admin/login');
+                }
                 if (err.response.status === 404) {
                     alert('No such request found');
                 }
@@ -54,6 +61,10 @@ export default function CandidateRequests() {
             }
         } catch (err) {
             if (err.response) {
+                if (err.response.status === 401) {
+                    localStorage.removeItem('adminId');
+                    navigate('/admin/login');
+                }
 
                 if (err.response.status === 404) {
                     alert('No such request');

@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react'
 import axiosInstance from '../../axios';
 import './Voting.css'
 import Navbar from '../../Components/Navbar/Navbar';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 export default function Voting() {
+    const navigate = useNavigate();
     const electInfo = useParams();
     const electionsId = electInfo.electionId;
+    const [electionTime, setElectionTime] = useState({});
     const [electionStatus, setElectionStatus] = useState();
     const [election, setElection] = useState({});
     const [candidates, setCandidates] = useState([]);
@@ -16,32 +18,72 @@ export default function Voting() {
 
     useEffect(() => {
         const getData = async () => {
-            const response = await axiosInstance.get(`/get/elections/candidates/${voterId}`);
-            if (!response.status === 200) {
-                return (
-                    <div>Try Later</div>
-                )
+            try {
+
+                const response = await axiosInstance.get(`/get/elections/candidates/${voterId}`);
+                if (!response.status === 200) {
+                    return (
+                        <div>Try Later</div>
+                    )
+                }
+                setCandidates(response.data.data);
+            } catch (err) {
+                if (err.response.status === 401) {
+                    localStorage.removeItem('voterId');
+                    navigate('/voter/login');
+                }
             }
-            setCandidates(response.data.data);
         }
         getData();
-    }, []);
+    }, [voterId]);
     useEffect(() => {
         const getElection = async () => {
-            const response = await axiosInstance.get(`/get/elections/info/${electionsId}`);
-            if (!response.status === 200) {
-                return (
-                    <div>Try Later</div>
-                )
+            try {
+
+                const response = await axiosInstance.get(`/get/elections/info/${electionsId}`);
+                if (response.status === 200) {
+                    return (
+                        <div>Try Later</div>
+                    )
+                }
+                setElection(response.data.data);
+            } catch (err) {
+                if (err.response.status === 401) {
+                    localStorage.removeItem('voterId');
+                    navigate('/voter/login');
+                }
             }
-            setElection(response.data.data);
         }
         getElection();
-    }, []);
+    }, [electionsId]);
+    useEffect(() => {
+        const getStatus = async () => {
+            try {
 
+                const response = await axiosInstance.get(`/get/elections/status/${electionsId}`);
+                if (response.status === 200) {
+                    setElectionStatus('success');
+                }
+            } catch (err) {
+                if (err.response) {
+                    if (err.response.status === 401) {
+                        localStorage.removeItem('voterId');
+                        navigate('/voter/login');
+                    }
+                    if (err.response.data.completed) {
+                        setElectionStatus('completed');
+                    }
+                    if (err.response.data.delay) {
+                        setElectionStatus('wait');
+                        setElectionTime(err.response.data.delay);
+                    }
+                }
+            }
+        }
+        getStatus();
+    }, []);
     const handleChange = (e) => {
         setSelectedCandidate({ ...selectedCandidate, [e.target.name]: e.target.value })
-        console.log(selectedCandidate);
     }
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -66,12 +108,6 @@ export default function Voting() {
                     });
                     setErrors((prevErrors) => ({ ...prevErrors, ...backendErrors }));
                 }
-                if (data.completed) {
-                    setElectionStatus('completed');
-                }
-                if (data.delay) {
-                    setElectionStatus('coming');
-                }
             }
 
         }
@@ -91,17 +127,25 @@ export default function Voting() {
                 <Navbar />
             </div>
             {
-                electionStatus === 'completed' ? (<div>Elections Time Over</div>) :
-                    (
-
+                electionStatus === 'completed' ? (
+                    <div className='content'>
+                        <h2>
+                            Elections Time Over
+                        </h2>
+                        <div>Results will be announced soon</div>
+                        <div className={`button`}>
+                            <button className='btn btn-primary' onClick={handleSubmit}>View Result</button>
+                        </div>
+                    </div>
+                ) : (
+                    electionStatus === 'success' ? (
                         <div className='content'>
                             <h1>{election.name}</h1>
                             <h4>Vote for your candidate</h4>
                             {candidates.map((candidate) => (
-                                <div className='options' >
+                                <div className='options' key={candidate._id}>
                                     <input
                                         className="form-check-input"
-                                        key={candidate._id}
                                         type="radio"
                                         name="selectedCandidate"
                                         id={`radioNoLabel${candidate._id}`}
@@ -109,8 +153,7 @@ export default function Voting() {
                                         aria-label="..."
                                         onChange={handleChange}
                                     />
-
-                                    <p className='option'><b> &nbsp;&nbsp; {candidate.voter.name} , </b>{candidate.party} </p>
+                                    <p className='option'><b>&nbsp;&nbsp; {candidate.voter.name} , </b>{candidate.party}</p>
                                 </div>
                             ))}
                             <p className='errors'>{errors.selectedCandidate}</p>
@@ -119,7 +162,30 @@ export default function Voting() {
                                 <button className='btn btn-primary' onClick={handleSubmit}>Vote</button>
                             </div>
                         </div>
-                    )}
+                    ) : (
+                        electionStatus === 'wait' ? (
+                            <div className='content'>
+                                <h2>
+                                    Elections Coming Soon
+                                </h2>
+                                <div className='date_time'><b>Date Now : </b> {electionTime.currentDate}</div>
+                                <div className='date_time'><b>Time Now : </b> {electionTime.currentTime}</div>
+                                <div className='date_time'><b>ELection Date : </b> {electionTime.electionDate}</div>
+                                <div className='date_time'><b>ELection start Time : </b> {electionTime.startTime}</div>
+                                <div className='date_time'><b>ELection End Time : </b> {electionTime.endTime}</div>
+                            </div>
+                        ) : (
+                            <div className='content'>
+                                <div className="spinner-border" role="status">
+                                    <span className="visually-hidden">Loading...</span>
+                                </div>
+                            </div>
+                        )
+                    )
+                )
+            }
         </div>
-    )
+    );
+
+
 }

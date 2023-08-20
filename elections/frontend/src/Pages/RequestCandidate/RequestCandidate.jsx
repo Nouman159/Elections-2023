@@ -2,10 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axiosInstance from '../../axios';
 import styles from './RequestCandidate.module.css'
-const { io } = require("socket.io-client");
-const socket = io("http://localhost:5000", {
-    autoConnect: false,
-});
+
 
 export default function CandidateRequest() {
     const navigate = useNavigate();
@@ -16,10 +13,6 @@ export default function CandidateRequest() {
     const [newCandidateRequest, setNewCandidateRequest] = useState({
         party: '', constituency: '', description: '',
     })
-    socket.connect();
-    useEffect(() => {
-        socket.emit('newCandidateRequest');
-    }, [])
 
     const [errorsRequest, setErrorsRequest] = useState({});
     const handleChange = (e) => {
@@ -27,14 +20,24 @@ export default function CandidateRequest() {
     }
     useEffect(() => {
         const getData = async () => {
-            const response = await axiosInstance.get(`/request/candidate/data`);
-            if (!response.status === 200) {
-                setErrorsRequest((prevErrors) => ({ ...prevErrors, tryagain: 'Try Later !' }));
-                return;
-            }
-            setConstituencies(response.data.constituencies);
-            setParties(response.data.parties);
+            try {
 
+                const response = await axiosInstance.get(`/request/candidate/data`);
+
+                if (!response.status === 200) {
+                    setErrorsRequest((prevErrors) => ({ ...prevErrors, tryagain: 'Try Later !' }));
+                    return;
+                }
+                setConstituencies(response.data.constituencies);
+                setParties(response.data.parties);
+            }
+            catch (err) {
+                if (err.response.status === 401) {
+                    localStorage.removeItem('voterId');
+                    navigate('/voter/login');
+
+                }
+            }
         }
         getData();
     }, [])
@@ -67,6 +70,10 @@ export default function CandidateRequest() {
                 if (error.response.status === 409) {
                     alert('Your request is already in queue');
                     return;
+                }
+                if (err.response.status === 401) {
+                    localStorage.removeItem('voterId');
+                    navigate('/voter/login');
                 }
                 if (error.response.status === 400) {
                     const data = error.response.data;

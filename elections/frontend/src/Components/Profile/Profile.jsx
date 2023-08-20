@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import Navbar from '../Navbar/Navbar'
+import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../axios'
 import styles from './Profile.module.css'
-// import url from '../../../../backend/images'
+
 export default function Profile() {
     const id = localStorage.getItem('voterId');
+    const navigate = useNavigate();
     const [data, setData] = useState(null);
     useEffect(() => {
 
@@ -12,20 +14,23 @@ export default function Profile() {
             try {
                 const response = await axiosInstance(`/elections/voter/profile/${id}`);
                 const info = response.data.voter;
-                console.log(info.pic);
                 setData(info);
             } catch (err) {
                 if (err.response.status === 404) {
                     alert('try later');
+                }
+                if (err.response.status === 401) {
+                    localStorage.removeItem('voterId');
+                    navigate('/voter/login');
                 }
             }
         }
         handleProfile();
     }, [id])
     if (data === null) {
-        return <div class="text-center ">
-            <div class="spinner-border" role="status">
-                <span class="visually-hidden">Loading...</span>
+        return <div className="text-center ">
+            <div className="spinner-border" role="status">
+                <span className="visually-hidden">Loading...</span>
             </div>
         </div>
     }

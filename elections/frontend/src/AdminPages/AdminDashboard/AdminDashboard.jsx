@@ -1,8 +1,38 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import './AdminDashboard.css'
 import AdminNavbar from '../AdminNavbar/AdminNavbar'
+import axiosInstance from '../../axios';
+import { useNavigate } from 'react-router-dom';
 
 export default function AdminDashboard() {
+    const [info, setInfo] = useState();
+    const navigate = useNavigate();
+    useEffect(() => {
+        const handleInfo = async () => {
+            try {
+                const res = await axiosInstance('/admin/elections/dashboard/info');
+                setInfo(res.data);
+            } catch (error) {
+                if (error.res) {
+                    if (error.response.status === 400) {
+                        return (
+                            <div>
+                                Try Later
+                            </div>
+                        )
+                    }
+                    if (error.response.status === 401) {
+                        localStorage.removeItem('adminId');
+                        navigate('/admin/login');
+                    }
+                }
+            }
+        }
+        handleInfo();
+    }, [])
+    useEffect(() => {
+        console.log(info);
+    }, [info]);
     return (
         <div>
             <div >
@@ -11,18 +41,37 @@ export default function AdminDashboard() {
                 </div>
                 <div className="main-content">
                     <div className="information">
-                        <div className="info">
-                            <h4>Total Candidates</h4>
-                            <div className="cont">70</div>
-                        </div>
-                        <div className="info">
-                            <h4>Total Constituencies</h4>
-                            <div className="cont">80</div>
-                        </div>
-                        <div className="info">
-                            <h4>Total Constituencies</h4>
-                            <div className="cont">100</div>
-                        </div>
+                        {info ? (
+                            <>
+                                <div className="info">
+                                    <h4>Total Candidates</h4>
+                                    <div className="cont">{info.numCandidates}</div>
+                                </div>
+                                <div className="info">
+                                    <h4>Total Constituencies</h4>
+                                    <div className="cont">{info.numConstituencies}</div>
+                                </div>
+                                <div className="info">
+                                    <h4>Total Parties</h4>
+                                    <div className="cont">{info.numParties}</div>
+                                </div>
+                            </>
+                        ) : (
+                            <>
+                                <div className="info">
+                                    <h4>Total Candidates</h4>
+                                    <div className="cont">---</div>
+                                </div>
+                                <div className="info">
+                                    <h4>Total Constituencies</h4>
+                                    <div className="cont">---</div>
+                                </div>
+                                <div className="info">
+                                    <h4>Total Constituencies</h4>
+                                    <div className="cont">---</div>
+                                </div>
+                            </>
+                        )}
                     </div>
                     <div className="description">
                         <h3>Elections Management 2023</h3>

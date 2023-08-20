@@ -9,24 +9,19 @@ import styles from './VoterHomePage.module.css'
 export default function VoterHomePage() {
   const [elections, setElections] = useState([]);
   const navigate = useNavigate();
-  const validator = localStorage.getItem('voterId');
-  useEffect(() => {
-    if (!validator) {
-      navigate('/voter/login');
-    }
-  })
   const handleGetEvents = async () => {
     try {
       const response = await axiosInstance.get('/get/upcoming/elections');
-      console.log(response.data.data);
       setElections(response.data.data);
-      // console.log(elections);
-
     } catch (err) {
       if (err.response.status === 400) {
         return (
           <div>Try Later</div>
         )
+      }
+      if (err.response.status === 401) {
+        localStorage.removeItem('voterId');
+        navigate('/voter/login');
       }
     }
   }
@@ -44,11 +39,9 @@ export default function VoterHomePage() {
           <h3>Present Events</h3>
           <div className={`col-sm-6 ${styles.card_container}`} >
             {elections.filter(election => election.status === 'future').map(filteredElection => (
-
               <div className={`card ${styles.card}`} key={filteredElection._id}>
                 <div className="card-body">
                   <h3>{filteredElection.name}</h3>
-
                   <p className="card-text"><b>Date : </b>  {moment(filteredElection.electionDate).format('YYYY-MM-DD')}</p>
                   <p className="card-text"><b>Start Time : </b>{filteredElection.startTime} UTC</p>
                   <p className="card-text"><b>End Time : </b>{filteredElection.endTime} UTC</p>
@@ -57,7 +50,6 @@ export default function VoterHomePage() {
               </div>
             ))}
           </div>
-
         </div>
       </div>
     </div>

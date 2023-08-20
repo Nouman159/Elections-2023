@@ -8,8 +8,18 @@
     margin: auto;
 }
 
+.button {
+    margin-top: 10px;
+}
+
 .errors {
     color: red;
+}
+
+.date_time {
+    display: flex;
+    flex-direction: row;
+    margin: 5px 0px;
 }
 
 .option {

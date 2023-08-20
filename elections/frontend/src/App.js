@@ -21,6 +21,9 @@ import CandidateRequest from './Pages/RequestCandidate/RequestCandidate';
 import CandidateRequests from './AdminPages/CandidateRequests/CandidateRequests';
 import CreateElection from './AdminPages/CreateElection/CreateElection';
 import Voting from './Pages/Voting/Voting';
+import ViewCandidate from './Pages/ViewCandidates/ViewCandidate';
+import CandidateProfile from './Pages/CandidateProfile/CandidateProfile';
+import VoterLogout from './Pages/VoterLogout/VoterLogout';
 
 function App() {
 
@@ -35,7 +38,10 @@ function App() {
           <Route path='/' element={<HomePage />} />
           <Route path='/elections/voter/home/page' element={<VoterHomePage />} />
           <Route path='/elections/request/candidate/:id' element={<CandidateRequest />} />
+          <Route path='/get/candidate/lists/:id' element={<ViewCandidate />} />
+          <Route path='/candidate/profile/:candidateId' element={<CandidateProfile />} />
           <Route path='/elections/vote/:electionId' element={<Voting />} />
+          <Route path='/logout/voter' element={< VoterLogout />} />
 
           <Route path='/elections/admin/create/constituency' element={<CreateConstituency />} />
           <Route path='/elections/admin/create/party' element={<CreateParty />} />
