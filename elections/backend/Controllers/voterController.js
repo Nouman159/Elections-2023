@@ -124,7 +124,7 @@ exports.voter_login = [
 ]
 //Profile
 exports.voter_profile = [
-    asyncHandler(async (req, res, next) => {
+    asyncHandler(async (req, res) => {
         const voterId = req.params.id;
         try {
 

@@ -3,6 +3,7 @@ const { body, validationResult } = require("express-validator");
 const candRequest = require('../Models/candidateRequests');
 const Party = require('../Models/party');
 const Constituency = require('../Models/constituency');
+const Voter = require('../Models/voter');
 
 exports.candidate_request = [
     body('description')
@@ -100,4 +101,34 @@ exports.candidate_rejected = [
             return res.status(400).json({ message: "failed" });
         }
     })
+]
+
+exports.candidate_names = [
+    async (req, res) => {
+        try {
+
+            const { voterId } = req.params;
+            const voterConstituency = await Voter.findOne({ _id: voterId }, 'constituency');
+            const constituency = voterConstituency.constituency;
+            const newConstituency = await Constituency.findOne({ _id: constituency }, 'name');
+            const candidateLists = await candRequest.find({ status: 'candidate', constituency: newConstituency.name }, 'voter party').populate('voter', 'name');
+            return res.status(200).json({ list: candidateLists });
+        } catch (err) {
+
+            return res.json(400).json({ error: 'true' });
+        }
+    }
+]
+
+exports.candidate_profile = [
+    async (req, res) => {
+        try {
+
+            const { candidateId } = req.params;
+            const profile = await candRequest.findOne({ status: 'candidate', _id: candidateId }).populate('voter', 'name email');
+            return res.status(200).json({ profile: profile });
+        } catch {
+            return res.status(400).json({ error: 'true' });
+        }
+    }
 ]

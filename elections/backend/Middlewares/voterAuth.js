@@ -42,7 +42,6 @@ exports.voterAuth = (req, res, next) => {
         const decoded = jwt.verify(token, voterJwtSecret);
         req.user = decoded;
         next();
-        // return res.status(200).json({ authenticated: true });
     }
     catch (er) {
         console.log("err", er);

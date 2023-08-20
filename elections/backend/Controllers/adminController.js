@@ -4,6 +4,9 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require("bcrypt");
 
 const Admin = require('../Models/admin');
+const Constituency = require('../Models/constituency');
+const Candidate = require('../Models/candidateRequests');
+const Party = require('../Models/party');
 
 const { adminJwtSecret } = require('../config');
 
@@ -85,4 +88,24 @@ exports.admin_login = [
             .cookie("adminToken", adminToken, { httpOnly: true, withCredentials: true })
             .json({ admin: true, "adminId": admin._id });
     })
+]
+
+exports.dashboard_info = [
+    async (req, res) => {
+        try {
+            const [
+                numCandidates,
+                numConstituencies,
+                numParties
+            ] = await Promise.all([
+                Candidate.countDocuments({ status: "candidate" }).exec(),
+                Constituency.countDocuments({}).exec(),
+                Party.countDocuments({}).exec(),
+            ]);
+            return res.status(200).json({ numCandidates, numConstituencies, numParties });
+        } catch (err) {
+            return res.status(400).json({ success: 'false' });
+        }
+
+    }
 ]

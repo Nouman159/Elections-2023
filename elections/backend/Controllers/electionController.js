@@ -2,6 +2,7 @@ const asyncHandler = require('express-async-handler');
 const { body, validationResult } = require("express-validator");
 const moment = require('moment');
 
+const CheckVoteModel = require('../Models/voteCheck');
 const Election = require('../Models/elections');
 const Voter = require('../Models/voter');
 const Vote = require('../Models/vote');
@@ -30,7 +31,6 @@ exports.election_create = [
             return true;
         }),
     async (req, res) => {
-        console.log(req.body);
         const errors = validationResult(req);
         const { electionDate, startTime, endTime } = req.body;
         const today = new Date();
@@ -129,53 +129,76 @@ exports.checkTime = [
         const electionDat = moment(electionDate).format('YYYY-MM-DD');
         const currentDateTime = new Date();
         const currentDate = moment(currentDateTime).format('YYYY-MM-DD');
+        const errors = [];
         let date1 = new Date(currentDate).getTime();
         let date2 = new Date(electionDat).getTime();
+        const delay = {
+            currentDate: currentDate,
+            currentTime: currentTime,
+            electionDate: electionDat,
+            startTime: startTime,
+            endTime: endTime
+        }
         if (date1 === date2) {
             if ((currentTime >= startTime) && (currentTime <= endTime)) {
-                console.log('Hello this is the elections time');
-                next();
+                return res.status(200).json({ success: 'true' });
             }
-            else if (currentTime < startTime)
-                return res.status(400).json({ delay: 'Wait for voting time' });
+            else if (currentTime < startTime) {
+                return res.status(400).json({ delay: delay });
+            }
             else if (currentTime > endTime)
                 return res.status(400).json({ completed: 'Voting completed' });
         }
         else if (date1 > date2)
             return res.status(400).json({ completed: 'Voting completed' });
         else
-            return res.status(400).json({ delay: 'Wait for voting time' });
+            return res.status(400).json({ delay: delay });
+    }
+]
+
+exports.view_vote_duplicate = [
+    async (req, res, next) => {
+        const { electionId, voterId } = req.params;
+        const viewVote = await CheckVoteModel.findOne({ election: electionId, voter: voterId })
+        if (viewVote) {
+            const errors = [];
+            errors.push({
+                path: 'duplicate',
+                msg: 'Vote casted already'
+            })
+            return res.status(400).json({ errors: errors });
+        }
+        else {
+            next();
+        }
     }
 ]
 
 exports.elections_cast_vote = [
     async (req, res) => {
         try {
-
-            console.log('Hello ');
             const { electionId, voterId, candidateId } = req.params;
             const constituencyId = await Voter.findOne({ _id: voterId }, "constituency");
-            const checkVote = await Vote.findOne({ voter: voterId });
-            const errors = [];
-            console.log('Hello 1');
+            const checkVote = await Vote.findOne({ election: electionId, candidaterequests: candidateId, constituency: constituencyId.constituency });
             if (checkVote) {
-                console.log('Hello 2');
-                errors.push({
-                    path: 'duplicate',
-                    msg: 'Vote casted already'
+                console.log('Hello');
+                checkVote.voterCount++;
+                await checkVote.save();
+            } else {
+                const newVote = new Vote({
+                    election: electionId,
+                    candidaterequests: candidateId,
+                    voterCount: 1,
+                    constituency: constituencyId.constituency
                 })
-                return res.status(400).json({ errors: errors });
+                await newVote.save();
             }
-            console.log('Hello 2');
+            // const newCheckVote = new CheckVoteModel({
+            //     election: electionId,
+            //     voter: voterId
+            // });
 
-            const newVote = new Vote({
-                election: electionId,
-                candidate: candidateId,
-                voter: voterId,
-                constituency: constituencyId.constituency
-            })
-            console.log('Hello 3');
-            await newVote.save();
+            // await newCheckVote.save();
             return res.status(200).json({ success: 'true' });
         } catch {
             return res.status(400).json({ success: 'false' });

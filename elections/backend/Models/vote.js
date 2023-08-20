@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const voteSchema = new mongoose.Schema({
     election: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Election',
+        ref: 'Elections',
         required: true
     },
     constituency: {
@@ -11,15 +11,19 @@ const voteSchema = new mongoose.Schema({
         ref: 'Constituency',
         required: true
     },
-    candidate: {
+    candidaterequests: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Candidate',
+        ref: 'candidateRequest',
         required: true
     },
-    voter: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Voter',
-        required: true
+    voterCount: {
+        type: Number,
+        default: 0
+    },
+    isWinner: {
+        type: String,
+        enum: [true, false],
+        default: false
     }
 }, { timestamps: true });
 
