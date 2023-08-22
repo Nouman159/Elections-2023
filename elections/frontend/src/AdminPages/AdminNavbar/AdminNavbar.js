@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import './AdminNavbar.css'
 import axiosInstance from '../../axios';
-import { useNavigate } from 'react-router-dom';
 
 export default function AdminNavbar() {
     const [requests, setRequests] = useState(0);
@@ -9,12 +10,10 @@ export default function AdminNavbar() {
     useEffect(() => {
         const handlePendingRequests = async () => {
             try {
-
                 const response = await axiosInstance.get('/admin/pending/requests')
                 setRequests(response.data.count);
             } catch (err) {
                 if (err.response.status === 401) {
-                    console.log('Unauthorized user');
                     localStorage.removeItem('adminId');
                     navigate('/admin/login');
                 }
@@ -25,8 +24,7 @@ export default function AdminNavbar() {
     return (
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
             <div className="container-fluid">
-                <a className="navbar-brand" href="/elections/admin/dashboard">Election23
-                </a>
+                <a className="navbar-brand" href="/elections/admin/dashboard">Election23 </a>
                 <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                     <span className="navbar-toggler-icon"></span>
                 </button>
@@ -58,7 +56,6 @@ export default function AdminNavbar() {
                             </ul>
                         </li>
                     </ul>
-
                     <ul className="navbar-nav">
 
                         <li className="nav-item ">
