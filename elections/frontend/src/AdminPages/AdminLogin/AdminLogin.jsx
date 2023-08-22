@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 import axiosInstance from '../../axios';
 import styles from './AdminLogin.module.css'
@@ -105,11 +105,11 @@ export default function AdminLogin() {
                         </div>
                         <div className={`${styles.d_grid}`}>
                             <button className='btn btn-primary' onClick={handleSubmit}>LogIn</button>
-                            <Link to="/admin/signup">
+                            {/* <Link to="/admin/signup">
                                 <button className="btn btn-secondary ">
                                     SignUp
                                 </button>
-                            </Link>
+                            </Link> */}
                         </div>
                     </form>
                 </div>

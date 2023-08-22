@@ -1,35 +1,35 @@
 import React, { useEffect, useState } from 'react';
-// import addNotification from 'react-push-notification';
+import { useNavigate } from 'react-router-dom';
+
 import axiosInstance from '../../axios';
 import AdminNavbar from '../AdminNavbar/AdminNavbar';
 import './CandidateRequest.css';
-import { useNavigate } from 'react-router-dom';
 
 export default function CandidateRequests() {
     const [requests, setRequests] = useState([]);
     const navigate = useNavigate();
-    const getData = async () => {
-        try {
-            const response = await axiosInstance.get('/admin/get/candidate/requests');
-            setRequests(response.data.requests);
-        } catch (err) {
-            if (err.response) {
-                if (err.response.status === 401) {
-                    localStorage.removeItem('adminId');
-                    navigate('/admin/login');
-                }
-                if (err.response.status === 404) {
-                    alert('No requests yet');
-                }
-                if (err.response.data.status === 400) {
-                    alert('Try Later');
+    useEffect(() => {
+        const getData = async () => {
+            try {
+                const response = await axiosInstance.get('/admin/get/candidate/requests');
+                setRequests(response.data.requests);
+            } catch (err) {
+                if (err.response) {
+                    if (err.response.status === 401) {
+                        localStorage.removeItem('adminId');
+                        navigate('/admin/login');
+                    }
+                    if (err.response.status === 404) {
+                        alert('No requests yet');
+                    }
+                    if (err.response.data.status === 400) {
+                        alert('Try Later');
+                    }
                 }
             }
-        }
-    };
-    useEffect(() => {
+        };
         getData();
-    }, []);
+    }, [navigate]);
     const handleApproval = async (requestId) => {
         try {
             const response = await axiosInstance.put(`/admin/elections/candidate/approve/${requestId}`);
@@ -98,7 +98,7 @@ export default function CandidateRequests() {
                                 </div>
                             ))
                         ) : (
-                            <p>No requests</p>
+                            <p>No requests Yet</p>
                         )}
                     </div>
                 </div>

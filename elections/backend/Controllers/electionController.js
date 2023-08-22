@@ -66,14 +66,20 @@ exports.election_create = [
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
         }
-        const newElection = new Election({
-            name: req.body.name,
-            electionDate: req.body.electionDate,
-            startTime: req.body.startTime,
-            endTime: req.body.endTime
-        })
-        await newElection.save();
-        return res.status(200).json({ data: "success" });
+        try {
+
+            const newElection = new Election({
+                name: req.body.name,
+                electionDate: req.body.electionDate,
+                startTime: req.body.startTime,
+                endTime: req.body.endTime
+            })
+            await newElection.save();
+            return res.status(200).json({ data: "success" });
+        } catch {
+            return res.status(500).json({ data: "failed" });
+
+        }
     },
 ];
 

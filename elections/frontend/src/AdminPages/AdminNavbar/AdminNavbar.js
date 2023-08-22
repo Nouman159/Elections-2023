@@ -20,7 +20,7 @@ export default function AdminNavbar() {
             }
         };
         handlePendingRequests();
-    }, [])
+    }, [navigate])
     return (
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
             <div className="container-fluid">
@@ -31,7 +31,7 @@ export default function AdminNavbar() {
                 <div className="collapse navbar-collapse justify-content-between" id="navbarNavDropdown">
                     <ul className="navbar-nav">
                         <li className="nav-item">
-                            <a className="nav-link active" aria-current="page" href="#">Home</a>
+                            <a className="nav-link active" aria-current="page" href="/elections/admin/dashboard">Home</a>
                         </li>
                         <li className="nav-item item-align-center">
                             <a className="nav-link text-white text-decoration-none d-flex align-items-center" href='/elections/admin/requests/management'>
@@ -46,13 +46,13 @@ export default function AdminNavbar() {
                             </a>
                         </li>
                         <li className="nav-item dropdown item">
-                            <a className="nav-link active dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <div className="nav-link active dropdown-toggle" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 Create
-                            </a>
+                            </div>
                             <ul className="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                                <li><a className="dropdown-item" href="create/party">Party</a></li>
-                                <li><a className="dropdown-item" href="create/constituency">Constituency</a></li>
-                                <li><a className="dropdown-item" href="create/election">Election</a></li>
+                                <li><a className="dropdown-item" href="/elections/admin/create/party">Party</a></li>
+                                <li><a className="dropdown-item" href="/elections/admin/create/constituency">Constituency</a></li>
+                                <li><a className="dropdown-item" href="/elections/admin/create/election">Election</a></li>
                             </ul>
                         </li>
                     </ul>

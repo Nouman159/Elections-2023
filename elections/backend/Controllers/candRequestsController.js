@@ -55,12 +55,11 @@ exports.request_data = [
 ]
 
 exports.get_candidate_requests = [
-    asyncHandler(async (req, res, next) => {
+    asyncHandler(async (req, res) => {
         try {
             const requests = await candRequest.find({ status: 'pending' });
-            if (!requests) {
+            if (!requests)
                 return res.status(404).json({ message: "No requests yet" });
-            }
             return res.status(200).json({ message: "success", requests: requests });
 
         } catch {
@@ -80,7 +79,6 @@ exports.candidate_approved = [
             request.status = 'candidate';
             await request.save();
             return res.status(200).json({ message: "success" });
-
         } catch {
             return res.status(400).json({ message: "failed" });
         }
@@ -88,13 +86,12 @@ exports.candidate_approved = [
 ]
 
 exports.candidate_rejected = [
-    asyncHandler(async (req, res, next) => {
+    asyncHandler(async (req, res) => {
         const { requestId } = req.params;
         try {
             const request = await candRequest.deleteOne({ _id: requestId });
-            if (request.deletedCount === 1) {
+            if (request.deletedCount === 1)
                 return res.status(200).json({ message: "success" });
-            }
             return res.status(404).json({ message: "No such request" });
         } catch {
             return res.status(400).json({ message: "failed" });

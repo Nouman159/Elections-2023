@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import moment from 'moment'
 
 import axiosInstance from '../../axios'
-import './CreateElection.module.css'
+import './CreateElection.css'
+import AdminNavbar from '../AdminNavbar/AdminNavbar'
 
 export default function CreateElection() {
     const navigate = useNavigate();
@@ -20,7 +21,6 @@ export default function CreateElection() {
         const newTime = e.target.value;
         const updatedTime = moment(newTime, 'h:mm A').format('HH:mm');
         setNewElections({ ...newElections, [e.target.name]: updatedTime });
-        console.log(newElections);
     }
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -52,7 +52,7 @@ export default function CreateElection() {
                     localStorage.removeItem('adminId');
                     navigate('/admin/login');
                 }
-                if (error.response.data.status === 400) {
+                if (error.response.status === 400 && error.response.data) {
                     const data = error.response.data;
                     if (data.errors) {
                         const backendErrors = {};
@@ -85,36 +85,41 @@ export default function CreateElection() {
         return err;
     }
     return (
-        <div className='body login template d-flex justify-content-center vh-100 bg-prmary'>
-            <div className={`px-5 py-3 rounded bgwhite form_container`}>
-                <form encType='multipart/form-data'>
-                    <h3 className='text-center'>Create Election</h3>
-                    <div className="form-controller">
-                        <div className='mb-2 form-inp'>
-                            <label htmlFor='name'>Name</label>
-                            <input type='name' name='name' placeholder='Enter election name' value={newElections.name} className='form-control' onChange={handleChange} />
-                            <p className='error'>{errors.name}</p>
+        <div>
+            <div className='mt-2'>
+                <AdminNavbar />
+            </div>
+            <div className='body login template d-flex justify-content-center vh-100 bg-prmary'>
+                <div className={`px-5 py-3 rounded bgwhite form_container`}>
+                    <form encType='multipart/form-data'>
+                        <h3 className='text-center'>Create Election</h3>
+                        <div className="form-controller">
+                            <div className='mb-2 form-inp'>
+                                <label htmlFor='name'>Name</label>
+                                <input type='name' name='name' placeholder='Enter election name' value={newElections.name} className='form-control' onChange={handleChange} />
+                                <p className='error'>{errors.name}</p>
+                            </div>
+                            <div className='mb-2 form-inp'>
+                                <label htmlFor='electionDate'>Election Date (UTC)</label>
+                                <input type='date' name='electionDate' placeholder='Enter election date' value={newElections.electionDate} className='form-control' onChange={handleChange} />
+                                <p className='error'>{errors.electionDate}</p>
+                            </div>
+                            <div className='mb-2 form-inp'>
+                                <label htmlFor='startTime'>Start Time (UTC)</label>
+                                <input type='time' name='startTime' placeholder='Enter start time' value={newElections.startTime} className='form-control' onChange={handleDate} />
+                                <p className='error'>{errors.startTime}</p>
+                            </div>
+                            <div className='mb-2 form-inp'>
+                                <label htmlFor='endTime'>End Date (UTC)</label>
+                                <input type='time' name='endTime' placeholder='Enter end time' value={newElections.endTime} className='form-control' onChange={handleDate} />
+                                <p className='error'>{errors.endTime}</p>
+                            </div>
                         </div>
-                        <div className='mb-2 form-inp'>
-                            <label htmlFor='electionDate'>Election Date (UTC)</label>
-                            <input type='date' name='electionDate' placeholder='Enter election date' value={newElections.electionDate} className='form-control' onChange={handleChange} />
-                            <p className='error'>{errors.electionDate}</p>
+                        <div className='d-grid'>
+                            <button className='btn btn-primary' onClick={handleSubmit}>Create</button>
                         </div>
-                        <div className='mb-2 form-inp'>
-                            <label htmlFor='startTime'>Start Time (UTC)</label>
-                            <input type='time' name='startTime' placeholder='Enter start time' value={newElections.startTime} className='form-control' onChange={handleDate} />
-                            <p className='error'>{errors.startTime}</p>
-                        </div>
-                        <div className='mb-2 form-inp'>
-                            <label htmlFor='endTime'>End Date (UTC)</label>
-                            <input type='time' name='endTime' placeholder='Enter end time' value={newElections.endTime} className='form-control' onChange={handleDate} />
-                            <p className='error'>{errors.endTime}</p>
-                        </div>
-                    </div>
-                    <div className='d-grid'>
-                        <button className='btn btn-primary' onClick={handleSubmit}>Create</button>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
     )

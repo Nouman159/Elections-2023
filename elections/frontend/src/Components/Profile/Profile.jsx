@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import Navbar from '../Navbar/Navbar'
 import { useNavigate } from 'react-router-dom';
+
+import Navbar from '../Navbar/Navbar'
 import axiosInstance from '../../axios'
 import styles from './Profile.module.css'
 
@@ -9,7 +10,6 @@ export default function Profile() {
     const navigate = useNavigate();
     const [data, setData] = useState(null);
     useEffect(() => {
-
         const handleProfile = async (e) => {
             try {
                 const response = await axiosInstance(`/elections/voter/profile/${id}`);
@@ -26,7 +26,7 @@ export default function Profile() {
             }
         }
         handleProfile();
-    }, [id])
+    }, [id, navigate])
     if (data === null) {
         return <div className="text-center ">
             <div className="spinner-border" role="status">
