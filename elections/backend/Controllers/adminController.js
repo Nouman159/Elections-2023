@@ -82,7 +82,7 @@ exports.admin_login = [
         }
         const adminToken = jwt.sign({
             data: admin.id
-        }, adminJwtSecret, { expiresIn: '24h' });
+        }, adminJwtSecret, { expiresIn: '12h' });
         return res.status(200)
             .cookie("adminToken", adminToken, { httpOnly: true, withCredentials: true })
             .json({ admin: true, "adminId": admin._id });
