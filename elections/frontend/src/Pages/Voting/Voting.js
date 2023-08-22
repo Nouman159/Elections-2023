@@ -134,7 +134,11 @@ export default function Voting() {
                         </h2>
                         <div>Results will be announced soon</div>
                         <div className={`button`}>
-                            <button className='btn btn-primary' onClick={handleSubmit}>View Result</button>
+                            <a href={`/elections/result/${electionsId}`}>
+                                <button className='btn btn-primary'>
+                                    View Result
+                                </button>
+                            </a>
                         </div>
                     </div>
                 ) : (

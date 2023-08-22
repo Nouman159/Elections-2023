@@ -16,7 +16,7 @@ export default function VoterHomePage() {
     } catch (err) {
       if (err.response.status === 400) {
         return (
-          <div>Try Later</div>
+          <div className='content'>Try Later</div>
         )
       }
       if (err.response.status === 401) {
@@ -38,17 +38,21 @@ export default function VoterHomePage() {
         <div className={`${styles.present_event}`}>
           <h3>Present Events</h3>
           <div className={`col-sm-6 ${styles.card_container}`} >
-            {elections.filter(election => election.status === 'future').map(filteredElection => (
-              <div className={`card ${styles.card}`} key={filteredElection._id}>
-                <div className="card-body">
-                  <h3>{filteredElection.name}</h3>
-                  <p className="card-text"><b>Date : </b>  {moment(filteredElection.electionDate).format('YYYY-MM-DD')}</p>
-                  <p className="card-text"><b>Start Time : </b>{filteredElection.startTime} UTC</p>
-                  <p className="card-text"><b>End Time : </b>{filteredElection.endTime} UTC</p>
-                  <Link to={`/elections/vote/${filteredElection._id}`} className="btn btn-primary ">Vote Now</Link>
-                </div>
-              </div>
-            ))}
+            <div className="col-sm-6 ">
+              {elections
+                .filter(election => election.status === 'future')
+                .map(filteredElection => (
+                  <div className="card mt-3" key={filteredElection._id}>
+                    <div className="card-body">
+                      <h3>{filteredElection.name}</h3>
+                      <p className="card-text"><b>Date : </b>{moment(filteredElection.electionDate).format('YYYY-MM-DD')}</p>
+                      <p className="card-text"><b>Start Time : </b>{filteredElection.startTime} (UTC)</p>
+                      <p className="card-text"><b>End Time : </b>{filteredElection.endTime} (UTC)</p>
+                      <Link to={`/elections/vote/${filteredElection._id}`} className="btn btn-primary">View Status</Link>
+                    </div>
+                  </div>
+                ))}
+            </div>
           </div>
         </div>
       </div>

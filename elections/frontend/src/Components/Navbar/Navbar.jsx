@@ -52,7 +52,7 @@ export default function Navbar() {
                                         </a>
                                         <ul className="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                                             <li><a className="dropdown-item" href="/elections/voter/profile">Profile</a></li>
-                                            <li><a className="dropdown-item" href={`/elections/request/candidate/${id}`}>Request Candidate</a></li>
+                                            <li><a className="dropdown-item" href={`/elections/candidate`}>Candidate Profile</a></li>
                                             <li><a className="dropdown-item" href='/logout/voter'>Logout</a></li>
                                         </ul>
                                     </li>

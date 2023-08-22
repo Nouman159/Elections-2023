@@ -58,3 +58,15 @@ exports.constituency_create = [
         }
     })
 ]
+
+exports.get_constituencies = [
+    async (req, res) => {
+        try {
+
+            const constituencies = await Constituency.find({}, 'name');
+            return res.status(200).json({ constituencies: constituencies });
+        } catch {
+            return res.status(400).json({ failed: 'true' });
+        }
+    }
+]

@@ -10,7 +10,7 @@ export default function CandidateRequests() {
     const navigate = useNavigate();
     const getData = async () => {
         try {
-            const response = await axiosInstance.get('/get/candidate/requests');
+            const response = await axiosInstance.get('/admin/get/candidate/requests');
             setRequests(response.data.requests);
         } catch (err) {
             if (err.response) {
@@ -21,7 +21,7 @@ export default function CandidateRequests() {
                 if (err.response.status === 404) {
                     alert('No requests yet');
                 }
-                if (err.response.status === 400) {
+                if (err.response.data.status === 400) {
                     alert('Try Later');
                 }
             }

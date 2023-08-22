@@ -10,18 +10,15 @@ export default function AdminDashboard() {
     useEffect(() => {
         const handleInfo = async () => {
             try {
-                const res = await axiosInstance('/admin/elections/dashboard/info');
-                setInfo(res.data);
-            } catch (error) {
-                if (error.res) {
-                    if (error.response.status === 400) {
-                        return (
-                            <div>
-                                Try Later
-                            </div>
-                        )
+                const response = await axiosInstance.get('/admin/elections/dashboard/info');
+                setInfo(response.data);
+            } catch (err) {
+                if (err.response) {
+                    if (err.response.status === 400) {
+                        alert('Try Later');
                     }
-                    if (error.response.status === 401) {
+                    if (err.response.status === 401) {
+                        console.log('Unauthorized user');
                         localStorage.removeItem('adminId');
                         navigate('/admin/login');
                     }
@@ -30,9 +27,6 @@ export default function AdminDashboard() {
         }
         handleInfo();
     }, [])
-    useEffect(() => {
-        console.log(info);
-    }, [info]);
     return (
         <div>
             <div >
@@ -87,26 +81,15 @@ export default function AdminDashboard() {
                         <div className="container p-4">
                             <div className="row">
                                 <div className="col-lg-6 col-md-12 mb-4 mb-md-0">
-                                    <h5 className="text-uppercase">About</h5>
+                                    <h5 className="text-uppercase">About Us</h5>
                                     <p>
                                         Welcome to the Elections Management System Admin Dashboard! Our robust platform is designed to streamline the entire electoral process, providing administrators with powerful tools
-                                    </p>
-                                </div>
-                                <div className="col-lg-6 col-md-12 mb-4 mb-md-0">
-                                    <h5 className="text-uppercase">Contact Us</h5>
-                                    <p>
-                                        <b>Email : </b>
-                                        noumanarshad15926@gmail.com
-                                    </p>
-                                    <p>
-                                        <b>Phone No : </b>
-                                        0300-0012345
                                     </p>
                                 </div>
                             </div>
                         </div>
                         <div className="text-center p-3" style={{ backgroundColor: 'rgba(0, 0, 0, 0.2)' }}>
-                            © 2020 Copyright:
+                            © 2020 Copyright : &nbsp;
                             <a className="text-dark" href="https://mdbootstrap.com/">Elections23.com</a>
                         </div>
                     </footer>

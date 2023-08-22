@@ -1,7 +1,27 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './AdminNavbar.css'
+import axiosInstance from '../../axios';
+import { useNavigate } from 'react-router-dom';
 
 export default function AdminNavbar() {
+    const [requests, setRequests] = useState(0);
+    const navigate = useNavigate();
+    useEffect(() => {
+        const handlePendingRequests = async () => {
+            try {
+
+                const response = await axiosInstance.get('/admin/pending/requests')
+                setRequests(response.data.count);
+            } catch (err) {
+                if (err.response.status === 401) {
+                    console.log('Unauthorized user');
+                    localStorage.removeItem('adminId');
+                    navigate('/admin/login');
+                }
+            }
+        };
+        handlePendingRequests();
+    }, [])
     return (
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
             <div className="container-fluid">
@@ -15,10 +35,19 @@ export default function AdminNavbar() {
                         <li className="nav-item">
                             <a className="nav-link active" aria-current="page" href="#">Home</a>
                         </li>
-                        <li className="nav-item">
-                            <a className="nav-link active" href="/elections/admin/requests/management">Requests</a>
+                        <li className="nav-item item-align-center">
+                            <a className="nav-link text-white text-decoration-none d-flex align-items-center" href='/elections/admin/requests/management'>
+                                Requests
+                                {(requests !== 0) ? (
+                                    <span class="badge rounded-pill top-0 start-100 translate-middle  bg-danger ms-2">
+                                        {requests}
+                                        <span class="visually-hidden">unread messages</span>
+                                    </span>
+                                ) : (<></>)
+                                }
+                            </a>
                         </li>
-                        <li className="nav-item dropdown">
+                        <li className="nav-item dropdown item">
                             <a className="nav-link active dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 Create
                             </a>

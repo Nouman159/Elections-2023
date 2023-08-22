@@ -67,15 +67,14 @@ exports.admin_login = [
         .withMessage('Invalid email format.'),
     body('password').notEmpty().withMessage('Password is required.')
         .isLength({ min: 8 }).withMessage('Password must be at least 8 characters.'),
-    asyncHandler(async (req, res, next) => {
+    asyncHandler(async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
         }
         const admin = await Admin.findOne({ email: req.body.email })
-        if (!admin) {
+        if (!admin)
             return res.status(400).json({ err: "User not found" });
-        }
         const pwdCompare = await bcrypt.compare(req.body.password, admin.password);
         if (!pwdCompare) {
             return res.status(400).json({ errors: "Try logging with correct credentials" });
@@ -83,7 +82,7 @@ exports.admin_login = [
         }
         const adminToken = jwt.sign({
             data: admin.id
-        }, adminJwtSecret);
+        }, adminJwtSecret, { expiresIn: '24h' });
         return res.status(200)
             .cookie("adminToken", adminToken, { httpOnly: true, withCredentials: true })
             .json({ admin: true, "adminId": admin._id });

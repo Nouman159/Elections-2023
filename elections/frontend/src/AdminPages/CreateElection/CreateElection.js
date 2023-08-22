@@ -52,7 +52,7 @@ export default function CreateElection() {
                     localStorage.removeItem('adminId');
                     navigate('/admin/login');
                 }
-                if (error.response.status === 400) {
+                if (error.response.data.status === 400) {
                     const data = error.response.data;
                     if (data.errors) {
                         const backendErrors = {};
@@ -96,17 +96,17 @@ export default function CreateElection() {
                             <p className='error'>{errors.name}</p>
                         </div>
                         <div className='mb-2 form-inp'>
-                            <label htmlFor='electionDate'>Election Date</label>
+                            <label htmlFor='electionDate'>Election Date (UTC)</label>
                             <input type='date' name='electionDate' placeholder='Enter election date' value={newElections.electionDate} className='form-control' onChange={handleChange} />
                             <p className='error'>{errors.electionDate}</p>
                         </div>
                         <div className='mb-2 form-inp'>
-                            <label htmlFor='startTime'>Start Time</label>
+                            <label htmlFor='startTime'>Start Time (UTC)</label>
                             <input type='time' name='startTime' placeholder='Enter start time' value={newElections.startTime} className='form-control' onChange={handleDate} />
                             <p className='error'>{errors.startTime}</p>
                         </div>
                         <div className='mb-2 form-inp'>
-                            <label htmlFor='endTime'>End Date</label>
+                            <label htmlFor='endTime'>End Date (UTC)</label>
                             <input type='time' name='endTime' placeholder='Enter end time' value={newElections.endTime} className='form-control' onChange={handleDate} />
                             <p className='error'>{errors.endTime}</p>
                         </div>

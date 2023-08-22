@@ -70,8 +70,7 @@ exports.get_candidate_requests = [
 ]
 
 exports.candidate_approved = [
-    asyncHandler(async (req, res, next) => {
-        console.log('Hello');
+    asyncHandler(async (req, res) => {
         const { requestId } = req.params;
         try {
             const request = await candRequest.findOne({ _id: requestId });
@@ -129,6 +128,63 @@ exports.candidate_profile = [
             return res.status(200).json({ profile: profile });
         } catch {
             return res.status(400).json({ error: 'true' });
+        }
+    }
+]
+
+exports.is_candidate = [
+    async (req, res) => {
+        try {
+            const { voterId } = req.params;
+            const candidate = await candRequest.findOne({ voter: voterId, status: 'candidate' });
+            if (candidate)
+                return res.status(200).json({ isCandidate: 'true' });
+            return res.status(200).json({ isCandidate: 'false' });
+        } catch {
+            return res.status(400).json({ failed: 'true' });
+        }
+    }
+]
+
+exports.voters_list = [
+    async (req, res) => {
+        try {
+            const { candidateId } = req.params;
+            const constituency = await candRequest.findOne({ _id: candidateId, status: 'candidate' }, 'constituency');
+            const newConstituency = constituency.constituency;
+            const constituencyId = await Constituency.findOne({ name: newConstituency }, '_id')
+            const id = constituencyId._id;
+            const votersList = await Voter.find({ constituency: id }, 'name email');
+            if (votersList)
+                return res.status(200).json({ voters: votersList });
+            return res.status(404);
+        } catch {
+            return res.status(400).json({ failed: 'true' });
+        }
+    }
+]
+
+exports.pending_requests = [
+    async (req, res) => {
+        try {
+            const pendingCount = await candRequest.countDocuments({ status: 'pending' });
+            return res.status(200).json({ count: pendingCount });
+        } catch {
+            return res.status(400).json({ failed: 'true' });
+        }
+    }
+]
+
+exports.check_status = [
+    async (req, res) => {
+        try {
+            const { voterId } = req.params;
+            const request = await candRequest.findOne({ voter: voterId }, 'status')
+            if (!request)
+                return res.status(200).json({ data: { status: 'voter' } });
+            return res.status(200).json({ data: request });
+        } catch {
+            return res.status(400).json({ failed: 'true' });
         }
     }
 ]

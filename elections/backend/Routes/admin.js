@@ -11,7 +11,11 @@ router.post('/elections/signup', adminController.admin_create);
 
 router.post('/elections/login', adminController.admin_login);
 
-router.get('/elections/dashboard/info', adminController.dashboard_info);
+router.get('/pending/requests', adminAuth, candidateController.pending_requests);
+
+router.get('/get/candidate/requests', adminAuth, candidateController.get_candidate_requests);
+
+router.get('/elections/dashboard/info', adminAuth, adminController.dashboard_info);
 
 router.put(`/elections/candidate/approve/:requestId`, adminAuth, candidateController.candidate_approved);
 

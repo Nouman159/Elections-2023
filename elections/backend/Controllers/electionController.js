@@ -122,15 +122,17 @@ exports.election_info = [
 ]
 
 exports.checkTime = [
-    async (req, res, next) => {
+    async (req, res) => {
         const { electionId } = req.params;
         const { electionDate, startTime, endTime } = await Election.findOne({ _id: electionId }, "electionDate startTime endTime");
-        const currentTime = moment().format('HH:mm');
+        const currentTime = moment().utc().format('HH:mm');
         const electionDat = moment(electionDate).format('YYYY-MM-DD');
-        const currentDateTime = new Date();
+        const utcDateTime = new Date();
+        const currentDateTime = utcDateTime.toUTCString()
         const currentDate = moment(currentDateTime).format('YYYY-MM-DD');
-        const errors = [];
+        console.log(currentDate);
         let date1 = new Date(currentDate).getTime();
+
         let date2 = new Date(electionDat).getTime();
         const delay = {
             currentDate: currentDate,

@@ -113,7 +113,7 @@ exports.voter_login = [
         const id = voter._id;
         const voterToken = jwt.sign({
             data: voter.id
-        }, voterJwtSecret, { expiresIn: '1h' });
+        }, voterJwtSecret, { expiresIn: '24h' });
         return res
             .status(200)
             .cookie("token", voterToken, { httpOnly: true, withCredentials: true })

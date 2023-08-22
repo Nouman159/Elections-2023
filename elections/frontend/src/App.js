@@ -24,6 +24,9 @@ import Voting from './Pages/Voting/Voting';
 import ViewCandidate from './Pages/ViewCandidates/ViewCandidate';
 import CandidateProfile from './Pages/CandidateProfile/CandidateProfile';
 import VoterLogout from './Pages/VoterLogout/VoterLogout';
+import ViewCandidateShip from './Pages/ViewCandidateShip/ViewCandidateShip';
+import HalkaVoters from './Pages/HalkaVoters/HalkaVoters';
+import Result from './Pages/Result/Result';
 
 function App() {
 
@@ -37,10 +40,13 @@ function App() {
           <Route path='elections/voter/profile' element={< Profile />} />
           <Route path='/' element={<HomePage />} />
           <Route path='/elections/voter/home/page' element={<VoterHomePage />} />
-          <Route path='/elections/request/candidate/:id' element={<CandidateRequest />} />
+          {/* <Route path='/elections/request/candidate/:id' element={<CandidateRequest />} /> */}
+          <Route path='/elections/candidate' element={<ViewCandidateShip />} />
           <Route path='/get/candidate/lists/:id' element={<ViewCandidate />} />
           <Route path='/candidate/profile/:candidateId' element={<CandidateProfile />} />
+          <Route path='/voters/halka/:candidateId' element={< HalkaVoters />} />
           <Route path='/elections/vote/:electionId' element={<Voting />} />
+          <Route path='/elections/result/:electionId' element={<Result />} />
           <Route path='/logout/voter' element={< VoterLogout />} />
 
           <Route path='/elections/admin/create/constituency' element={<CreateConstituency />} />

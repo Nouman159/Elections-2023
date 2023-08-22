@@ -78,7 +78,7 @@ export default function CreateParty() {
             err.partyname = 'partyname required !';
         }
         if (!values.foundedYear) {
-            err.partyname = 'partyname required !';
+            err.foundedYear = 'Year required !';
         }
         if (!values.leadername) {
             err.leadername = 'leadername required !';
