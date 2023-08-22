@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom';
+
 import './AdminDashboard.css'
 import AdminNavbar from '../AdminNavbar/AdminNavbar'
 import axiosInstance from '../../axios';
-import { useNavigate } from 'react-router-dom';
 
 export default function AdminDashboard() {
     const [info, setInfo] = useState();
@@ -18,7 +19,6 @@ export default function AdminDashboard() {
                         alert('Try Later');
                     }
                     if (err.response.status === 401) {
-                        console.log('Unauthorized user');
                         localStorage.removeItem('adminId');
                         navigate('/admin/login');
                     }
@@ -72,11 +72,10 @@ export default function AdminDashboard() {
                         <div className="desc">
                             Streamline electoral processes with our Elections Management System's powerful admin dashboard. Access real-time data, manage candidates, and oversee voter registration effortlessly, ensuring smooth and secure elections. Simplify the complexity of managing elections and make informed decisions with our intuitive interface.
                         </div>
-                        hello
+
                     </div>
                 </div>
                 <div className="footer">
-
                     <footer className="bg-light text-center text-lg-start">
                         <div className="container p-4">
                             <div className="row">
@@ -90,7 +89,7 @@ export default function AdminDashboard() {
                         </div>
                         <div className="text-center p-3" style={{ backgroundColor: 'rgba(0, 0, 0, 0.2)' }}>
                             © 2020 Copyright : &nbsp;
-                            <a className="text-dark" href="https://mdbootstrap.com/">Elections23.com</a>
+                            <a className="text-dark">Elections23.com</a>
                         </div>
                     </footer>
                 </div>

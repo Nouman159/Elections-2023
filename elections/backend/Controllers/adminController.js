@@ -92,11 +92,7 @@ exports.admin_login = [
 exports.dashboard_info = [
     async (req, res) => {
         try {
-            const [
-                numCandidates,
-                numConstituencies,
-                numParties
-            ] = await Promise.all([
+            const [numCandidates, numConstituencies, numParties] = await Promise.all([
                 Candidate.countDocuments({ status: "candidate" }).exec(),
                 Constituency.countDocuments({}).exec(),
                 Party.countDocuments({}).exec(),
