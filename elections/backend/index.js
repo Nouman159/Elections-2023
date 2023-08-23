@@ -16,7 +16,7 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }))
 const corsOptions = {
-  origin: 'http://localhost:3000',
+  origin: `http://localhost:${port}`,
   credentials: true,
   optionSuccessStatus: 200
 }
