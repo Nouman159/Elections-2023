@@ -1,11 +1,8 @@
-const { body, validationResult } = require("express-validator");
 const _ = require('lodash');
 
 const Election = require('../Models/elections');
-const Voter = require('../Models/voter');
 const Vote = require('../Models/vote');
 const Constituency = require('../Models/constituency');
-const candidaterequests = require('../Models/candidateRequests');
 
 exports.elections_result = async (req, res) => {
     try {

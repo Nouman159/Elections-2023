@@ -17,6 +17,10 @@ router.get('/get/candidate/requests', adminAuth, candidateController.get_candida
 
 router.get('/elections/dashboard/info', adminAuth, adminController.dashboard_info);
 
+router.get('/elections/past/events', adminAuth, electionController.get_past_elections);
+
+router.put('/elections/end/:electionsId', adminAuth, electionController.end_elections);
+
 router.put(`/elections/candidate/approve/:requestId`, adminAuth, candidateController.candidate_approved);
 
 router.put(`/elections/candidate/reject/:requestId`, adminAuth, candidateController.candidate_rejected);

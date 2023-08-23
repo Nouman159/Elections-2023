@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import axiosInstance from '../../axios'
 import './UserSignUp.css'
@@ -6,11 +6,15 @@ import Navbar from '../../Components/Navbar/Navbar';
 
 export default function UserSignUp() {
     const navigate = useNavigate();
+    const [errors, setErrors] = useState({});
+    const [constituencies, setConstituencies] = useState([]);
 
     const [newUser, setNewUser] = useState({
         name: '', email: '', password: '', cnic: '', constituency: '', pic: ''
     })
-    const [errors, setErrors] = useState({});
+    useEffect(() => {
+        console.log(newUser);
+    }, [newUser]);
     const err = {};
     const handleChange = (e) => {
         setNewUser({ ...newUser, [e.target.name]: e.target.value })
@@ -19,18 +23,28 @@ export default function UserSignUp() {
     const handlePhoto = (e) => {
         setNewUser({ ...newUser, pic: e.target.files[0] });
     }
+    useEffect(() => {
+        const handleConstituencies = async () => {
+            try {
+                const response = await axiosInstance.get('/get/constituencies');
+                console.log(response.data.constituencies);
+                setConstituencies(response.data.constituencies);
+            } catch (err) {
+                return (
+                    <div className='content'>Try Later</div>
+                )
+            }
+        }
+        handleConstituencies();
+    }, [])
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         const frontErr = validate(newUser);
         setErrors(frontErr);
         if (Object.keys(frontErr).length !== 0) {
-
-            console.log('hello 2');
             return;
         }
-
-        console.log('hello 3');
         const formData = new FormData();
         formData.append('name', newUser.name);
         formData.append('email', newUser.email);
@@ -41,7 +55,7 @@ export default function UserSignUp() {
         try {
             const response = await axiosInstance.post(`/elections/voter/signup`, formData);
             if (response.status === 200) {
-                navigate('/login');
+                navigate('/voter/login');
             }
         } catch (error) {
             if (error.response) {
@@ -132,8 +146,20 @@ export default function UserSignUp() {
                                 <p className='error'>{errors.cnic}</p>
                             </div>
                             <div className='mb-2 form-inp'>
-                                <label htmlFor='conctituency'>Constituency</label>
-                                <input type='text' name='constituency' placeholder='Enter your constituency' value={newUser.constituency} className='form-control' onChange={handleChange} />
+                                <label htmlFor='constituency'>Constituency</label>
+                                <select
+                                    name='constituency'
+                                    value={newUser.constituency}
+                                    className='form-control'
+                                    onChange={handleChange}
+                                >
+                                    <option value='' disabled>Select a constituency</option>
+                                    {constituencies.map((constituency) => (
+                                        <option key={constituency._id} value={constituency.name}>
+                                            {constituency.name}
+                                        </option>
+                                    ))}
+                                </select>
                                 <p className='error'>{errors.constituency}</p>
                             </div>
                             <div className='mb-2 form-inp'>

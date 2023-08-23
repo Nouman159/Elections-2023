@@ -35,7 +35,7 @@ export default function Voting() {
             }
         }
         getData();
-    }, [voterId]);
+    }, [voterId, navigate]);
     useEffect(() => {
         const getElection = async () => {
             try {
@@ -55,7 +55,7 @@ export default function Voting() {
             }
         }
         getElection();
-    }, [electionsId]);
+    }, [electionsId, navigate]);
     useEffect(() => {
         const getStatus = async () => {
             try {
@@ -81,7 +81,7 @@ export default function Voting() {
             }
         }
         getStatus();
-    }, []);
+    }, [electionsId, navigate]);
     const handleChange = (e) => {
         setSelectedCandidate({ ...selectedCandidate, [e.target.name]: e.target.value })
     }
@@ -126,24 +126,20 @@ export default function Voting() {
             <div className='navbar'>
                 <Navbar />
             </div>
-            {
-                electionStatus === 'completed' ? (
-                    <div className='content'>
-                        <h2>
-                            Elections Time Over
-                        </h2>
-                        <div>Results will be announced soon</div>
-                        <div className={`button`}>
-                            <a href={`/elections/result/${electionsId}`}>
-                                <button className='btn btn-primary'>
-                                    View Result
-                                </button>
-                            </a>
-                        </div>
+            {electionStatus === 'completed' ? (
+                <div className='content'>
+                    <h2>Elections Time Over</h2>
+                    <div>Results will be announced soon</div>
+                    <div className={`button`}>
+                        <a href={`/elections/result/${electionsId}`}>
+                            <button className='btn btn-primary'>View Result</button>
+                        </a>
                     </div>
-                ) : (
-                    electionStatus === 'success' ? (
-                        <div className='content'>
+                </div>
+            ) : (
+                <div className='content'>
+                    {candidates.length > 0 ? (
+                        <div>
                             <h1>{election.name}</h1>
                             <h4>Vote for your candidate</h4>
                             {candidates.map((candidate) => (
@@ -157,39 +153,40 @@ export default function Voting() {
                                         aria-label="..."
                                         onChange={handleChange}
                                     />
-                                    <p className='option'><b>&nbsp;&nbsp; {candidate.voter.name} , </b>{candidate.party}</p>
+                                    <label htmlFor={`radioNoLabel${candidate._id}`} className='option'>
+                                        <b>&nbsp;&nbsp; {candidate.voter.name}, </b>
+                                        {candidate.party}
+                                    </label>
                                 </div>
                             ))}
                             <p className='errors'>{errors.selectedCandidate}</p>
                             <p className='errors'>{errors.duplicate}</p>
-                            <div className={`d-grid d_grid`}>
+                            <div className='d-grid d_grid'>
                                 <button className='btn btn-primary' onClick={handleSubmit}>Vote</button>
                             </div>
                         </div>
                     ) : (
-                        electionStatus === 'wait' ? (
-                            <div className='content'>
-                                <h2>
-                                    Elections Coming Soon
-                                </h2>
-                                <div className='date_time'><b>Date Now : </b> {electionTime.currentDate}</div>
-                                <div className='date_time'><b>Time Now : </b> {electionTime.currentTime}</div>
-                                <div className='date_time'><b>ELection Date : </b> {electionTime.electionDate}</div>
-                                <div className='date_time'><b>ELection start Time : </b> {electionTime.startTime}</div>
-                                <div className='date_time'><b>ELection End Time : </b> {electionTime.endTime}</div>
-                            </div>
-                        ) : (
-                            <div className='content'>
-                                <div className="spinner-border" role="status">
-                                    <span className="visually-hidden">Loading...</span>
-                                </div>
-                            </div>
-                        )
-                    )
-                )
-            }
+                        <div>
+                            <p>No candidates to vote for this constituency</p>
+                        </div>
+                    )}
+                </div>
+            )}
+            {electionStatus === 'wait' ? (
+                <div className='content'>
+                    <h2>Elections Coming Soon</h2>
+                    <p><b>  Note :</b> UTC date and times</p>
+                    <div className='date_time'><b>Date Now :</b> {electionTime.currentDate} </div>
+                    <div className='date_time'><b>Time Now :</b> {electionTime.currentTime} </div>
+                    <div className='date_time'><b>Election Date :</b> {electionTime.electionDate}</div>
+                    <div className='date_time'><b>Election start Time :</b> {electionTime.startTime}</div>
+                    <div className='date_time'><b>Election End Time :</b> {electionTime.endTime}</div>
+                </div>
+            ) : (
+                <div className='content'>
+                </div>
+            )}
         </div>
     );
-
 
 }

@@ -55,3 +55,9 @@
         flex-basis: 90%;
     }
 }
+
+@media screen and (max-width : 460px) {
+    .content_right {
+        min-width: 70%;
+    }
+}

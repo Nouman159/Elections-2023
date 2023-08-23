@@ -7,6 +7,7 @@ const { v4: uuidv4 } = require('uuid');
 const path = require('path');
 
 const Voter = require('../Models/voter');
+const Constituency = require('../Models/constituency');
 const { voterJwtSecret } = require('../config');
 
 const storage = multer.diskStorage({
@@ -35,9 +36,7 @@ exports.voter_create = [
         .trim()
         .isLength({ min: 3 })
         .escape()
-        .withMessage("Specify correct name")
-        .isAlphanumeric()
-        .withMessage("Name should not have non-alphanumeric characters"),
+        .withMessage("Specify correct name"),
     body('email')
         .notEmpty()
         .withMessage('Email is required.')
@@ -47,10 +46,11 @@ exports.voter_create = [
         .isLength({ min: 8 }).withMessage('Password must be at least 8 characters.'),
     body('cnic').notEmpty().withMessage('CNIC is required.')
         .isLength({ min: 13, max: 15 }).withMessage('Enter valid cnic'),
-    body('constituency').isMongoId().withMessage('Invalid reference of constituency'),
     asyncHandler(async (req, res) => {
         const user = await Voter.findOne({ email: req.body.email });
         const cnicErr = await Voter.findOne({ cnic: req.body.cnic });
+        const constituency = await Constituency.findOne({ name: req.body.constituency });
+        const id = constituency._id;
         const errors = validationResult(req);
         if (cnicErr) {
             errors.errors.push({
@@ -80,7 +80,7 @@ exports.voter_create = [
             email: req.body.email,
             password: secPassword,
             cnic: req.body.cnic,
-            constituency: req.body.constituency,
+            constituency: id,
             pic: req.file.filename
         })
         await voter.save();
@@ -113,7 +113,7 @@ exports.voter_login = [
         const id = voter._id;
         const voterToken = jwt.sign({
             data: voter.id
-        }, voterJwtSecret, { expiresIn: '24h' });
+        }, voterJwtSecret, { expiresIn: '120h' });
         return res
             .status(200)
             .cookie("token", voterToken, { httpOnly: true, withCredentials: true })
@@ -127,8 +127,8 @@ exports.voter_profile = [
     asyncHandler(async (req, res) => {
         const voterId = req.params.id;
         try {
-
             const voter = await Voter.findOne({ _id: voterId })
+                .populate('constituency', 'name');
             if (!voter) {
                 return res.status(400).json({ message: "User not found" });
             }

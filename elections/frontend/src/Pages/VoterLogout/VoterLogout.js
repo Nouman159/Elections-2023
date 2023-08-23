@@ -1,5 +1,6 @@
-import axiosInstance from '../../axios';
 import { useNavigate } from 'react-router-dom';
+
+import axiosInstance from '../../axios';
 
 export default function VoterLogout() {
     const navigate = useNavigate();

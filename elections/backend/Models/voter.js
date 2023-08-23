@@ -25,7 +25,7 @@ const voterSchema = new mongoose.Schema({
     },
     constituency: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Contituency'
+        ref: 'Constituency'
     },
     pic: {
         type: String,

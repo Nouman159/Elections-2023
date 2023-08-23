@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import './ViewCandidate.css';
 import axiosInstance from '../../axios';
 import Navbar from '../../Components/Navbar/Navbar';
-import { useNavigate } from 'react-router-dom';
 
 export default function ViewCandidate() {
     const navigate = useNavigate();
     const voterId = localStorage.getItem('voterId');
     const [candidates, setCandidates] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-
     useEffect(() => {
         const handleCandidates = async () => {
             try {
@@ -17,7 +17,6 @@ export default function ViewCandidate() {
                 setCandidates(response.data.list);
             } catch (err) {
                 if (err.response) {
-                    console.log(err.response);
                     if (err.response.status === 400) {
                         alert('Try Later');
                     }
@@ -31,7 +30,7 @@ export default function ViewCandidate() {
             }
         };
         handleCandidates();
-    }, [voterId]);
+    }, [voterId, navigate]);
 
     return (
         <div>

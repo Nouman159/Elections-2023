@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom';
+
 import styles from './CreateConstituency.module.css'
 import axiosInstance from '../../axios';
-import { useNavigate } from 'react-router-dom';
+import AdminNavbar from '../../AdminPages/AdminNavbar/AdminNavbar'
 
 export default function CreateConstituency() {
     const navigate = useNavigate();
@@ -32,8 +34,8 @@ export default function CreateConstituency() {
                     area: newConstituency.area
                 },
             });
-            console.log(response);
             if (response.status === 200) {
+                alert('Constituency Registered successfully');
                 navigate('/elections/admin/dashboard');
             }
         } catch (error) {
@@ -92,31 +94,36 @@ export default function CreateConstituency() {
     }
 
     return (
-        <div className={`${styles.body} login template d-flex justify-content-center vh-100 bg-prmary`}>
-            <div className={`px-5 py-3 rounded bgwhite ${styles.form_container}`}>
-                <form encType='multipart/form-data'>
-                    <h3 className='text-center'>Create Constituency</h3>
-                    <div className={`${styles.form_controller}`}>
-                        <div className={`mb-2 ${styles.form_inp}`}>
-                            <label htmlFor='name'>Name</label>
-                            <input type='text' name='name' placeholder='Enter name' value={newConstituency.name} className='form-control' onChange={handleChange} />
-                            <p className={`${styles.error}`}>{errors.name}</p>
+        <div>
+            <div className='mt-2'>
+                <AdminNavbar />
+            </div>
+            <div className={`${styles.body} login template d-flex justify-content-center vh-100 bg-prmary`}>
+                <div className={`px-5 py-3 rounded bgwhite ${styles.form_container}`}>
+                    <form encType='multipart/form-data'>
+                        <h3 className='text-center'>Create Constituency</h3>
+                        <div className={`${styles.form_controller}`}>
+                            <div className={`mb-2 ${styles.form_inp}`}>
+                                <label htmlFor='name'>Name</label>
+                                <input type='text' name='name' placeholder='Enter name' value={newConstituency.name} className='form-control' onChange={handleChange} />
+                                <p className={`${styles.error}`}>{errors.name}</p>
+                            </div>
+                            <div className={`mb-2 ${styles.form_inp}`}>
+                                <label htmlFor='text'>City</label>
+                                <input type='city' name='city' placeholder='Enter city' value={newConstituency.city} className='form-control' onChange={handleChange} />
+                                <p className={`${styles.error}`}>{errors.city}</p>
+                            </div>
+                            <div className={`mb-2 ${styles.form_inp}`}>
+                                <label htmlFor='area'>Area Name</label>
+                                <input type='text' name='area' placeholder='Enter your area' value={newConstituency.area} className='form-control' onChange={handleChange} />
+                                <p className={`${styles.error}`}>{errors.area}</p>
+                            </div>
                         </div>
-                        <div className={`mb-2 ${styles.form_inp}`}>
-                            <label htmlFor='text'>City</label>
-                            <input type='city' name='city' placeholder='Enter city' value={newConstituency.city} className='form-control' onChange={handleChange} />
-                            <p className={`${styles.error}`}>{errors.city}</p>
+                        <div className={`d-grid ${styles.d_grid}`}>
+                            <button className='btn btn-primary' onClick={handleSubmit}>Create</button>
                         </div>
-                        <div className={`mb-2 ${styles.form_inp}`}>
-                            <label htmlFor='area'>area</label>
-                            <input type='text' name='area' placeholder='Enter your area' value={newConstituency.area} className='form-control' onChange={handleChange} />
-                            <p className={`${styles.error}`}>{errors.area}</p>
-                        </div>
-                    </div>
-                    <div className={`d-grid ${styles.d_grid}`}>
-                        <button className='btn btn-primary' onClick={handleSubmit}>Create</button>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
     )

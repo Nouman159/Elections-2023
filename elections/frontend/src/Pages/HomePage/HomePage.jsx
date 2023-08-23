@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+
 import Navbar from '../../Components/Navbar/Navbar'
 import styles from './HomePage.module.css'
 import logoImage from './logo.jpg'
-import { useNavigate } from 'react-router-dom'
 
 export default function HomePage() {
     const navigate = useNavigate();

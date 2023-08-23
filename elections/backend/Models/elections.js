@@ -20,7 +20,7 @@ const electionSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['future', 'present', 'past'],
+        enum: ['future', 'present', 'past', 'end'],
         default: 'future',
     },
 }, { timestamps: true });

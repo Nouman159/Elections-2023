@@ -46,29 +46,7 @@ app.use(function (err, req, res, next) {
   res.json('error');
 });
 
-const { Server } = require("socket.io");
 const httpServer = require('http').createServer(app);
-const io = new Server(httpServer, {
-  cors: {
-    origin: "http://localhost:3000", // Replace with your frontend URL
-    methods: ["GET", "POST"],
-    credentials: true,
-  },
-});
-
-io.on("connection", (socket) => {
-  socket.on("connect", () => {
-    console.log(socket.id); // ojIckSD2jqNzOqIrAGzL
-  });
-  socket.on("newCandidateRequest", () => {
-    console.log('New candidate request comes');
-    io.emit("newNotification");
-
-  });
-  socket.on('disconnect', () => {
-    console.log('A user disconnected');
-  });
-});
 
 httpServer.listen(port, () => {
   console.log(`App listening on port ${port}`)

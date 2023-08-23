@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom';
+
 import axiosInstance from '../../axios';
 import CandidateRequest from '../RequestCandidate/RequestCandidate';
 import Navbar from '../../Components/Navbar/Navbar';
-import { Link } from 'react-router-dom';
 
 export default function ViewCandidateShip() {
+    const navigate = useNavigate();
     const id = localStorage.getItem('voterId');
     const candidateId = localStorage.getItem('candidateId');
     const [isCandidate, setIsCandidate] = useState();
     useEffect(() => {
         const handleCandidate = async () => {
             try {
-
                 const response = await axiosInstance.get(`/check/status/${id}`);
                 if (response.data.data.status)
                     setIsCandidate(response.data.data.status)
@@ -19,6 +20,10 @@ export default function ViewCandidateShip() {
             }
             catch (err) {
                 if (err.response) {
+                    if (err.response.status === 401) {
+                        localStorage.removeItem('voterId');
+                        navigate('/voter/login');
+                    }
                     return (
                         <div className='content'>Try Later</div>
                     )
@@ -26,10 +31,12 @@ export default function ViewCandidateShip() {
             }
         }
         handleCandidate();
-    }, [id]);
+    }, [id, navigate]);
     return (
         <div>
-            <Navbar />
+            <div className='mt-2'>
+                <Navbar />
+            </div>
             <div className='content'>
 
                 {isCandidate ? (
@@ -46,11 +53,11 @@ export default function ViewCandidateShip() {
                                         View Your Halka's Voters List
                                     </h2>
                                     <div>
-                                        <button type="button" class="btn btn-primary">
-                                            <Link className='text-black text-decoration-none' to={`/voters/halka/${candidateId}`}>
+                                        <Link className='text-black text-decoration-none' to={`/voters/halka/${candidateId}`}>
+                                            <button type="button" className="btn btn-primary">
                                                 View
-                                            </Link>
-                                        </button>
+                                            </button>
+                                        </Link>
                                     </div>
                                 </div>
                             )}

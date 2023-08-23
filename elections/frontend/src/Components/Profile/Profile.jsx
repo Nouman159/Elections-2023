@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 
-import Navbar from '../Navbar/Navbar'
 import axiosInstance from '../../axios'
 import styles from './Profile.module.css'
 
@@ -36,9 +35,6 @@ export default function Profile() {
     }
     return (
         <>
-            <div className="navbar">
-                <Navbar />
-            </div>
             <div className={`${styles.content}`}>
                 <section className={`vh-100`} style={{ backgroundColor: '#f4f5f7' }}>
                     <div className="container py-5 h-100">
@@ -49,7 +45,11 @@ export default function Profile() {
                                         <div className={`col-md-4 ${styles.gradient_custom} text-center text-white`} style={{ borderTopLeftRadius: '.5rem', borderBottomLeftRadius: '.5rem' }}>
                                             <img src={`http://localhost:5000/images/${data.pic}`} alt="Profile Pic" className="img-fluid my-5" style={{ width: '120px', height: '120px' }} />
                                             <h5>{data.name}</h5>
-                                            <p>Voter</p>
+                                            {data.isCandidate ? (
+                                                <p>Candidate</p>
+                                            ) : (<>
+                                                <p>Voter</p>
+                                            </>)}
                                             <i className="far fa-edit mb-5"></i>
                                         </div>
                                         <div className="col-md-8">
@@ -72,11 +72,15 @@ export default function Profile() {
                                                 <div className="row pt-1">
                                                     <div className="col-6 mb-3">
                                                         <h6>Constituency</h6>
-                                                        <p className="text-muted">{data.constituency}</p>
+                                                        <p className="text-muted">{data.constituency.name}</p>
                                                     </div>
                                                     <div className="col-6 mb-3">
                                                         <h6>Status</h6>
-                                                        <p className="text-muted">Voter</p>
+                                                        {data.isCandidate ? (
+                                                            <p>Candidate</p>
+                                                        ) : (<>
+                                                            <p >Voter</p>
+                                                        </>)}
                                                     </div>
                                                 </div>
                                             </div>

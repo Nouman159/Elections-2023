@@ -1,5 +1,6 @@
 const asyncHandler = require('express-async-handler');
 const { body, validationResult } = require("express-validator");
+
 const candRequest = require('../Models/candidateRequests');
 const Party = require('../Models/party');
 const Constituency = require('../Models/constituency');
@@ -57,7 +58,7 @@ exports.request_data = [
 exports.get_candidate_requests = [
     asyncHandler(async (req, res) => {
         try {
-            const requests = await candRequest.find({ status: 'pending' });
+            const requests = await candRequest.find({ status: 'pending' }).populate('voter', 'name');
             if (!requests)
                 return res.status(404).json({ message: "No requests yet" });
             return res.status(200).json({ message: "success", requests: requests });
@@ -78,6 +79,9 @@ exports.candidate_approved = [
             }
             request.status = 'candidate';
             await request.save();
+            const voterChange = await Voter.findOne({ _id: request.voter });
+            voterChange.isCandidate = true;
+            await voterChange.save();
             return res.status(200).json({ message: "success" });
         } catch {
             return res.status(400).json({ message: "failed" });

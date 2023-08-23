@@ -1,4 +1,3 @@
-const asyncHandler = require('express-async-handler');
 const { body, validationResult } = require("express-validator");
 const moment = require('moment');
 
@@ -33,9 +32,9 @@ exports.election_create = [
     async (req, res) => {
         const errors = validationResult(req);
         const { electionDate, startTime, endTime } = req.body;
-        const today = new Date();
-        const inputDate = new Date(electionDate);
-        if (inputDate <= today) {
+        const today = moment().format('YYYY-MM-DD');
+        const inputDate = moment(electionDate).format('YYYY-MM-DD');
+        if (today > inputDate) {
             errors.errors.push({
                 type: 'field',
                 value: '',
@@ -77,7 +76,7 @@ exports.election_create = [
             await newElection.save();
             return res.status(200).json({ data: "success" });
         } catch {
-            return res.status(500).json({ data: "failed" });
+            return res.status(400);
 
         }
     },
@@ -86,8 +85,34 @@ exports.election_create = [
 exports.get_elections = [
     async (req, res) => {
         try {
-            const elections = await Election.find();
+            const elections = await Election.find({ status: { $ne: 'end' } });
             return res.status(200).json({ data: elections });
+        }
+        catch {
+            return res.status(400);
+        }
+    }
+]
+exports.get_past_elections = [
+    async (req, res) => {
+        try {
+            const elections = await Election.find({ status: 'past' });
+            return res.status(200).json({ data: elections });
+        }
+        catch {
+            return res.status(400);
+        }
+    }
+]
+exports.end_elections = [
+    async (req, res) => {
+        try {
+            const { electionsId } = req.params;
+            console.log(electionsId);
+            const election = await Election.findOne({ _id: electionsId });
+            election.status = 'end'
+            election.save();
+            return res.status(200).json({ data: 'success' });
         }
         catch {
             return res.status(400);
@@ -130,7 +155,7 @@ exports.election_info = [
 exports.checkTime = [
     async (req, res) => {
         const { electionId } = req.params;
-        const { electionDate, startTime, endTime } = await Election.findOne({ _id: electionId }, "electionDate startTime endTime");
+        const { _id, electionDate, startTime, endTime } = await Election.findOne({ _id: electionId }, "electionDate startTime endTime");
         const currentTime = moment().utc().format('HH:mm');
         const electionDat = moment(electionDate).format('YYYY-MM-DD');
         const utcDateTime = new Date();
@@ -149,16 +174,27 @@ exports.checkTime = [
         }
         if (date1 === date2) {
             if ((currentTime >= startTime) && (currentTime <= endTime)) {
+                const presentElection = await Election.findOne({ _id: _id });
+                presentElection.status = 'present';
+                await presentElection.save();
                 return res.status(200).json({ success: 'true' });
             }
             else if (currentTime < startTime) {
                 return res.status(400).json({ delay: delay });
             }
-            else if (currentTime > endTime)
+            else if (currentTime > endTime) {
+                const presentElection = await Election.findOne({ _id: _id });
+                presentElection.status = 'past';
+                await presentElection.save();
                 return res.status(400).json({ completed: 'Voting completed' });
+            }
         }
-        else if (date1 > date2)
+        else if (date1 > date2) {
+            const presentElection = await Election.findOne({ _id: _id });
+            presentElection.status = 'past';
+            await presentElection.save();
             return res.status(400).json({ completed: 'Voting completed' });
+        }
         else
             return res.status(400).json({ delay: delay });
     }
@@ -201,12 +237,12 @@ exports.elections_cast_vote = [
                 })
                 await newVote.save();
             }
-            // const newCheckVote = new CheckVoteModel({
-            //     election: electionId,
-            //     voter: voterId
-            // });
+            const newCheckVote = new CheckVoteModel({
+                election: electionId,
+                voter: voterId
+            });
 
-            // await newCheckVote.save();
+            await newCheckVote.save();
             return res.status(200).json({ success: 'true' });
         } catch {
             return res.status(400).json({ success: 'false' });

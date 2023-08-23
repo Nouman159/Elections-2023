@@ -32,26 +32,21 @@ exports.party_create = [
         .trim()
         .isLength({ min: 3 })
         .escape()
-        .withMessage("Enter valid name")
-        .matches(/^[a-zA-Z's]+$/)
-        .withMessage('Leader name can only contain letters only'),
+        .withMessage("Enter valid name"),
     body('partyname')
         .trim()
         .isLength({ min: 3 })
         .escape()
-        .withMessage("Enter valid name")
-        .matches(/^[a-zA-Z\s'-]+$/)
-        .withMessage('Party name can contain letters only'),
+        .withMessage("Enter valid name"),
     body('abbreviation')
         .trim()
         .notEmpty()
         .withMessage('Abbreviation is required.')
         .isLength({ min: 2, max: 10 })
-        .withMessage('Abbreviation must be between 2 and 10 characters.')
-        .matches(/^[A-Z-\s]+$/).withMessage('Abbreviation can only contain uppercase letters and hyphens.'),
+        .withMessage('Abbreviation must be between 2 and 10 characters.'),
     body('foundedYear')
         .notEmpty().withMessage('Founded Year is required.')
-        .isInt({ min: 1000, max: 2023 }).withMessage('Year must be valid number.'),
+        .isInt({ min: 1700, max: 2023 }).withMessage('Enter Valid Year'),
     body('ideology')
         .notEmpty()
         .withMessage('Idelogy is required.')
@@ -60,18 +55,30 @@ exports.party_create = [
     body('description')
         .notEmpty()
         .withMessage('Description is required.'),
-    asyncHandler(async (req, res, next) => {
+    asyncHandler(async (req, res) => {
         const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() });
-        }
         const party = await Party.findOne({ partyname: req.body.partyname });
         if (party) {
-            return res.status(400).json({ message: 'Party with that name already exists' });
+            errors.errors.push({
+                type: 'field',
+                value: '',
+                msg: 'Party with that name already exists',
+                path: 'partynameError',
+                location: 'body',
+            });
         }
         const party2 = await Party.findOne({ abbreviation: req.body.abbreviation })
         if (party2) {
-            return res.status(400).json({ message: 'Enter unique abbreviation. Already exists' });
+            errors.errors.push({
+                type: 'field',
+                value: '',
+                msg: 'Enter unique abbreviation. Already exists',
+                path: 'abbreviation',
+                location: 'body',
+            });
+        }
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
         }
         try {
             const newParty = new Party({
@@ -87,7 +94,7 @@ exports.party_create = [
             return res.status(200).json({ message: 'success' });
         }
         catch {
-            return res.status(400).json({ message: 'denied' });
+            return res.status(400).json({ failed: 'denied' });
         }
     })
 ]

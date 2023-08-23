@@ -40,7 +40,6 @@ exports.constituency_create = [
         if (constituency2) {
             return res.status(400).json({ error2: 'Constituency with that area already exists' });
         }
-        console.log('Hello');
         try {
             console.log(req.body);
             const newConstituency = new Constituency({
@@ -48,12 +47,9 @@ exports.constituency_create = [
                 city: req.body.city,
                 area: req.body.area
             })
-            console.log('Hello 1');
             await newConstituency.save();
-            console.log('Hello 2');
             return res.status(200).json({ message: 'success' });
         } catch {
-            console.log('Hello 2');
             return res.status(400).json({ message: 'Try later' });
         }
     })

@@ -12,6 +12,7 @@ export default function CandidateRequests() {
         const getData = async () => {
             try {
                 const response = await axiosInstance.get('/admin/get/candidate/requests');
+                console.log(response.data.requests);
                 setRequests(response.data.requests);
             } catch (err) {
                 if (err.response) {
@@ -87,8 +88,9 @@ export default function CandidateRequests() {
                             requests.map((request) => (
                                 <div key={request._id} className="card mb-4">
                                     <div className="card-body">
+                                        <h4 className="card-subtitle mb-2 ">{request.voter.name}</h4>
                                         <h5 className="card-title">{request.party}</h5>
-                                        <h6 className="card-subtitle mb-2 text-muted">{request.constituency}</h6>
+                                        <h4 className="card-subtitle mb-2 text-muted">{request.constituency}</h4>
                                         <p className="card-text">{request.description}</p>
                                         <div className="d-flex justify-content-between">
                                             <button className="btn btn-success" onClick={() => handleApproval(request._id)}>Approve</button>

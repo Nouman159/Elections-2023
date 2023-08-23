@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom';
+
 import './CandidateProfile.css'
 import axiosInstance from '../../axios';
-import { useNavigate, useParams } from 'react-router-dom';
 import Navbar from '../../Components/Navbar/Navbar';
 
 export default function CandidateProfile() {
@@ -27,7 +28,7 @@ export default function CandidateProfile() {
             }
         }
         handleProfile();
-    }, [])
+    }, [id, navigate])
     return (
         <div>
             <div className='navbar'>
@@ -35,7 +36,6 @@ export default function CandidateProfile() {
             </div>
             <div className='content cand_profile'>
                 {profile ? (
-
                     <section>
                         <div className="col-lg-8">
                             <div className="card mb-4">

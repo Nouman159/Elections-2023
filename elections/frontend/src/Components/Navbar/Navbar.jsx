@@ -30,7 +30,6 @@ export default function Navbar() {
                                         SignUp
                                     </div>
                                     <ul className="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                                        {/* <li><a className="dropdown-item" href="/admin/signup">Admin</a></li> */}
                                         <li><a className="dropdown-item" href="/voter/signup">Voter</a></li>
                                     </ul>
                                 </li>
@@ -52,8 +51,8 @@ export default function Navbar() {
                                             Others
                                         </div>
                                         <ul className="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                                            <li><a className="dropdown-item" href="/elections/voter/profile">Profile</a></li>
-                                            <li><a className="dropdown-item" href={`/elections/candidate`}>Candidate Profile</a></li>
+                                            <li><a className="dropdown-item" href={`/elections/voter/profile/${id}   `}>Profile</a></li>
+                                            <li><a className="dropdown-item" href={`/elections/candidate`}>View Candidature</a></li>
                                             <li><a className="dropdown-item" href='/logout/voter'>Logout</a></li>
                                         </ul>
                                     </li>

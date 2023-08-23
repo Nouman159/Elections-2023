@@ -33,13 +33,16 @@ export default function AdminNavbar() {
                         <li className="nav-item">
                             <a className="nav-link active" aria-current="page" href="/elections/admin/dashboard">Home</a>
                         </li>
+                        <li className="nav-item">
+                            <a className="nav-link active" aria-current="page" href="/elections/admin/election/management">Past Elections</a>
+                        </li>
                         <li className="nav-item item-align-center">
                             <a className="nav-link text-white text-decoration-none d-flex align-items-center" href='/elections/admin/requests/management'>
                                 Requests
                                 {(requests !== 0) ? (
-                                    <span class="badge rounded-pill top-0 start-100 translate-middle  bg-danger ms-2">
+                                    <span className="badge rounded-pill top-0 start-100 translate-middle  bg-danger ms-2">
                                         {requests}
-                                        <span class="visually-hidden">unread messages</span>
+                                        <span className="visually-hidden">unread messages</span>
                                     </span>
                                 ) : (<></>)
                                 }

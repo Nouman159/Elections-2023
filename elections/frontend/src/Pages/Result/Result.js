@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axiosInstance from '../../axios';
 import Navbar from '../../Components/Navbar/Navbar';
-import './Result.css'
 
 export default function Result() {
     const navigate = useNavigate();
@@ -31,7 +30,7 @@ export default function Result() {
             }
         };
         handleConstituencies();
-    }, []);
+    }, [navigate]);
 
     useEffect(() => {
         const handleGetResult = async () => {
@@ -57,13 +56,13 @@ export default function Result() {
 
             <div className='content'>
                 <div className='d-flex justify-content-center'>
-                    <div class="input-group">
-                        <div class="form-outline">
+                    <div className="input-group">
+                        <div className="form-outline">
                             <input
                                 type="search"
                                 id="form1"
-                                class="form-control"
-                                placeholder="Search"
+                                className="form-control"
+                                placeholder="Search By Name"
                                 aria-label="Search"
                                 value={search}
                                 onChange={e => setSearch(e.target.value)}

@@ -12,6 +12,8 @@ router.post('/elections/voter/signup', voterController.voter_create);
 
 router.post('/elections/voter/login', voterController.voter_login);
 
+
+
 router.get('/request/iscandidate/:voterId', voterAuth, candRequestsController.is_candidate);
 
 router.get('/request/voters/list/:candidateId', voterAuth, candRequestsController.voters_list);
@@ -26,7 +28,10 @@ router.get('/get/candidate/lists/:voterId', voterAuth, candRequestsController.ca
 
 router.get('/candidate/profile/:candidateId', voterAuth, candRequestsController.candidate_profile);
 
-router.get('/get/constituencies', voterAuth, constituencyController.get_constituencies);
+
+
+
+router.get('/get/constituencies', constituencyController.get_constituencies);
 
 router.get('/get/upcoming/elections', voterAuth, electionController.get_elections);
 
@@ -40,8 +45,9 @@ router.get('/get/elections/status/:electionId', voterAuth, electionController.ch
 
 router.get('/get/elections/result/:electionId', resultController.elections_result);
 
-router.get('/logout/voter', voterLogout);
-
 router.get('/elections/voter/profile/:id', voterAuth, voterController.voter_profile);
+
+
+router.get('/logout/voter', voterLogout);
 
 module.exports = router;
