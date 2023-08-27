@@ -33,6 +33,8 @@ exports.election_create = [
         const errors = validationResult(req);
         const { electionDate, startTime, endTime } = req.body;
         const today = moment().format('YYYY-MM-DD');
+        const timeNow = moment().utc().format('hh:mm');
+        console.log(timeNow);
         const inputDate = moment(electionDate).format('YYYY-MM-DD');
         if (today > inputDate) {
             errors.errors.push({
@@ -40,6 +42,15 @@ exports.election_create = [
                 value: '',
                 msg: 'Invalid Election Date',
                 path: 'electionDate',
+                location: 'body',
+            })
+        }
+        if (today === inputDate && timeNow > startTime) {
+            errors.errors.push({
+                type: 'field',
+                value: '',
+                msg: 'Choose a future time please',
+                path: 'startTime',
                 location: 'body',
             })
         }
@@ -142,7 +153,6 @@ exports.election_info = [
     async (req, res) => {
         try {
             const { electionId } = req.params;
-            console.log(electionId);
             const info = await Election.findOne({ _id: electionId }, "name electionDate")
             return res.status(200).json({ data: info });
         }
@@ -161,7 +171,6 @@ exports.checkTime = [
         const utcDateTime = new Date();
         const currentDateTime = utcDateTime.toUTCString()
         const currentDate = moment(currentDateTime).format('YYYY-MM-DD');
-        console.log(currentDate);
         let date1 = new Date(currentDate).getTime();
 
         let date2 = new Date(electionDat).getTime();
@@ -225,7 +234,6 @@ exports.elections_cast_vote = [
             const constituencyId = await Voter.findOne({ _id: voterId }, "constituency");
             const checkVote = await Vote.findOne({ election: electionId, candidaterequests: candidateId, constituency: constituencyId.constituency });
             if (checkVote) {
-                console.log('Hello');
                 checkVote.voterCount++;
                 await checkVote.save();
             } else {
@@ -241,7 +249,6 @@ exports.elections_cast_vote = [
                 election: electionId,
                 voter: voterId
             });
-
             await newCheckVote.save();
             return res.status(200).json({ success: 'true' });
         } catch {

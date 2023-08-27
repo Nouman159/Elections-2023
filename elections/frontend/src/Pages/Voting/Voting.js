@@ -14,6 +14,7 @@ export default function Voting() {
     const [candidates, setCandidates] = useState([]);
     const [selectedCandidate, setSelectedCandidate] = useState();
     const [errors, setErrors] = useState({});
+    const [isLoading, setIsLoading] = useState(true);
     const voterId = localStorage.getItem('voterId');
 
     useEffect(() => {
@@ -78,6 +79,8 @@ export default function Voting() {
                         setElectionTime(err.response.data.delay);
                     }
                 }
+            } finally {
+                setIsLoading(false);
             }
         }
         getStatus();
@@ -126,66 +129,71 @@ export default function Voting() {
             <div className='navbar'>
                 <Navbar />
             </div>
-            {electionStatus === 'completed' ? (
-                <div className='content'>
-                    <h2>Elections Time Over</h2>
-                    <div>Results will be announced soon</div>
-                    <div className={`button`}>
-                        <a href={`/elections/result/${electionsId}`}>
-                            <button className='btn btn-primary'>View Result</button>
-                        </a>
+            {isLoading === false ? (<>
+                {electionStatus === 'completed' ? (
+                    <div className='content'>
+                        <h2>Elections Time Over</h2>
+                        <div>Results will be announced soon</div>
+                        <div className={`button`}>
+                            <a href={`/elections/result/${electionsId}`}>
+                                <button className='btn btn-primary'>View Result</button>
+                            </a>
+                        </div>
                     </div>
-                </div>
-            ) : (
-                <div className='content'>
-                    {candidates.length > 0 ? (
-                        <div>
-                            <h1>{election.name}</h1>
-                            <h4>Vote for your candidate</h4>
-                            {candidates.map((candidate) => (
-                                <div className='options' key={candidate._id}>
-                                    <input
-                                        className="form-check-input"
-                                        type="radio"
-                                        name="selectedCandidate"
-                                        id={`radioNoLabel${candidate._id}`}
-                                        value={candidate._id}
-                                        aria-label="..."
-                                        onChange={handleChange}
-                                    />
-                                    <label htmlFor={`radioNoLabel${candidate._id}`} className='option'>
-                                        <b>&nbsp;&nbsp; {candidate.voter.name}, </b>
-                                        {candidate.party}
-                                    </label>
+                ) : (
+                    <></>
+                )}
+                {electionStatus === 'success' ? (
+                    <div className='content'>
+                        {candidates.length > 0 ? (
+                            <div>
+                                <h1>{election.name}</h1>
+                                <h4>Vote for your candidate</h4>
+                                {candidates.map((candidate) => (
+                                    <div className='options' key={candidate._id}>
+                                        <input
+                                            className="form-check-input"
+                                            type="radio"
+                                            name="selectedCandidate"
+                                            id={`radioNoLabel${candidate._id}`}
+                                            value={candidate._id}
+                                            aria-label="..."
+                                            onChange={handleChange}
+                                        />
+                                        <label htmlFor={`radioNoLabel${candidate._id}`} className='option'>
+                                            <b>&nbsp;&nbsp; {candidate.voter.name}, </b>
+                                            {candidate.party}
+                                        </label>
+                                    </div>
+                                ))}
+                                <p className='errors'>{errors.selectedCandidate}</p>
+                                <p className='errors'>{errors.duplicate}</p>
+                                <div className='d-grid d_grid'>
+                                    <button className='btn btn-primary' onClick={handleSubmit}>Vote</button>
                                 </div>
-                            ))}
-                            <p className='errors'>{errors.selectedCandidate}</p>
-                            <p className='errors'>{errors.duplicate}</p>
-                            <div className='d-grid d_grid'>
-                                <button className='btn btn-primary' onClick={handleSubmit}>Vote</button>
                             </div>
-                        </div>
-                    ) : (
-                        <div>
-                            <p>No candidates to vote for this constituency</p>
-                        </div>
-                    )}
-                </div>
-            )}
-            {electionStatus === 'wait' ? (
-                <div className='content'>
-                    <h2>Elections Coming Soon</h2>
-                    <p><b>  Note :</b> UTC date and times</p>
-                    <div className='date_time'><b>Date Now :</b> {electionTime.currentDate} </div>
-                    <div className='date_time'><b>Time Now :</b> {electionTime.currentTime} </div>
-                    <div className='date_time'><b>Election Date :</b> {electionTime.electionDate}</div>
-                    <div className='date_time'><b>Election start Time :</b> {electionTime.startTime}</div>
-                    <div className='date_time'><b>Election End Time :</b> {electionTime.endTime}</div>
-                </div>
-            ) : (
-                <div className='content'>
-                </div>
-            )}
+                        ) : (
+                            <div><p>No candidates to vote for this constituency</p></div>
+                        )}
+                    </div>
+                ) : (
+                    <></>
+                )}
+                {electionStatus === 'wait' ? (
+                    <div className='content'>
+                        <h2>Elections Coming Soon</h2>
+                        <p><b>  Note :</b> UTC date and times</p>
+                        <div className='date_time'><b>Date Now : &nbsp;</b> {electionTime.currentDate} </div>
+                        <div className='date_time'><b>Time Now : &nbsp;</b> {electionTime.currentTime} </div>
+                        <div className='date_time'><b>Election Date : &nbsp;</b> {electionTime.electionDate}</div>
+                        <div className='date_time'><b>Election start Time : &nbsp;</b> {electionTime.startTime}</div>
+                        <div className='date_time'><b>Election End Time : &nbsp;</b> {electionTime.endTime}</div>
+                    </div>
+                ) : (
+                    <div className='content'>
+                    </div>
+                )}
+            </>) : (<></>)}
         </div>
     );
 

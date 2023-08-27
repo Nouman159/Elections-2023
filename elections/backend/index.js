@@ -16,7 +16,7 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }))
 const corsOptions = {
-  origin: `http://localhost:${port}`,
+  origin: `http://localhost:3000`,
   credentials: true,
   optionSuccessStatus: 200
 }
@@ -28,10 +28,6 @@ app.use(cookieParser());
 app.use('/', userRoutes);
 app.use('/admin', adminRoutes);
 app.use('/elections/admin', catalogRoutes);
-
-// app.use(function (req, res, next) {
-//   next(createError(404));
-// });
 
 // error handler
 app.use(function (err, req, res, next) {

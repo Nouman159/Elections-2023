@@ -78,7 +78,6 @@ exports.admin_login = [
         const pwdCompare = await bcrypt.compare(req.body.password, admin.password);
         if (!pwdCompare) {
             return res.status(400).json({ errors: "Try logging with correct credentials" });
-
         }
         const adminToken = jwt.sign({
             data: admin.id
